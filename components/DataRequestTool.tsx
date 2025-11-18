@@ -3,7 +3,7 @@ import { Download, CheckCircle, AlertCircle, FileText, Database, Clock } from 'l
 import { TIERS, DATA_REQUIREMENTS } from '../constants';
 import { TierKey, AnalysisData } from '../types';
 import DataUploader from './DataUploader';
-import Dashboard from './Dashboard';
+import DashboardEnhanced from './DashboardEnhanced';
 import { generateAnalysis } from '../utils/analysisGenerator';
 
 const DataRequestTool: React.FC = () => {
@@ -53,7 +53,7 @@ const DataRequestTool: React.FC = () => {
   };
   
   if (view === 'dashboard' && analysisData) {
-    return <Dashboard analysisData={analysisData} onBack={handleBackToUploader} />;
+    return <DashboardEnhanced analysisData={analysisData} onBack={handleBackToUploader} />;
   }
 
   return (
