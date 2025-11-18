@@ -4,27 +4,45 @@ import { TiersData, DataRequirementsData } from './types';
 export const TIERS: TiersData = {
   gold: {
     name: 'Análisis GOLD',
-    price: '€4,900',
+    price: 4900,
     color: 'bg-yellow-500',
     description: '8 dimensiones completas con análisis avanzado',
     requirements: 'CCaaS moderno (Genesys, Five9, NICE, Talkdesk)',
-    timeline: '3-4 semanas'
+    timeline: '3-4 semanas',
+    features: [
+      'Análisis de 8 dimensiones completo',
+      'Roadmap ejecutable detallado',
+      'Modelo económico con ROI',
+      'Sesión de presentación incluida',
+      'Soporte prioritario'
+    ]
   },
   silver: {
     name: 'Análisis SILVER',
-    price: '€3,500',
+    price: 3500,
     color: 'bg-gray-400',
     description: '6 dimensiones core con datos estándar',
     requirements: 'Sistema ACD/PBX con reporting básico',
-    timeline: '2-3 semanas'
+    timeline: '2-3 semanas',
+    features: [
+      'Análisis de 6 dimensiones core',
+      'Roadmap ejecutable',
+      'Modelo económico con ROI',
+      'Dashboard interactivo'
+    ]
   },
   bronze: {
     name: 'Análisis EXPRESS',
-    price: '€1,950',
+    price: 1950,
     color: 'bg-orange-600',
     description: '3 dimensiones fundamentales',
     requirements: 'Exportación básica de reportes',
-    timeline: '1-2 semanas'
+    timeline: '1-2 semanas',
+    features: [
+      'Análisis de 3 dimensiones clave',
+      'Roadmap básico',
+      'Reporte ejecutivo'
+    ]
   }
 };
 

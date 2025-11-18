@@ -4,11 +4,12 @@ export type TierKey = 'gold' | 'silver' | 'bronze';
 
 export interface Tier {
   name: string;
-  price: string;
+  price: number;
   color: string;
   description: string;
   requirements: string;
   timeline: string;
+  features?: string[];
 }
 
 export interface Field {
