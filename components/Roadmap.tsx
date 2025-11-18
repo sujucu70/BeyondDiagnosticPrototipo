@@ -1,6 +1,7 @@
 import React from 'react';
 import { RoadmapInitiative, RoadmapPhase } from '../types';
 import { Bot, UserCheck, Cpu, Calendar, DollarSign, Users } from 'lucide-react';
+import MethodologyFooter from './MethodologyFooter';
 
 interface RoadmapProps {
   data: RoadmapInitiative[];
@@ -86,6 +87,14 @@ const Roadmap: React.FC<RoadmapProps> = ({ data }) => {
           );
         })}
       </div>
+      
+      {/* Methodology Footer */}
+      <MethodologyFooter
+        sources="Plan de transformación interno | Benchmarks de implementación: Gartner Magic Quadrant for CCaaS 2024"
+        methodology="Timelines basados en implementaciones similares en sector Telco/Tech | Recursos asumen disponibilidad full-time equivalente"
+        notes="Fases: Automate (Quick Wins, 0-6 meses), Assist (Build Capability, 6-12 meses), Augment (Transform, 12-18 meses) | Inversiones incluyen software, implementación, training y contingencia"
+        lastUpdated="Enero 2025"
+      />
     </div>
   );
 };

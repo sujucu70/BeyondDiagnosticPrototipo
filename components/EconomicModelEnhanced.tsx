@@ -4,6 +4,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { EconomicModelData } from '../types';
 import { DollarSign, TrendingDown, Calendar, TrendingUp } from 'lucide-react';
 import CountUp from 'react-countup';
+import MethodologyFooter from './MethodologyFooter';
 
 interface EconomicModelEnhancedProps {
   data: EconomicModelData;
@@ -216,6 +217,14 @@ const EconomicModelEnhanced: React.FC<EconomicModelEnhancedProps> = ({ data }) =
           generando un ROI de <span className="font-bold text-white">{roi3yr}x</span> en 3 años.
         </p>
       </motion.div>
+      
+      {/* Methodology Footer */}
+      <MethodologyFooter
+        sources="Datos operacionales internos (2024) | Benchmarks: Gartner, Forrester Research | Costes de software: RFP vendors (Q4 2024)"
+        methodology="DCF (Discounted Cash Flow) con tasa de descuento 10% | Fully-loaded cost incluye salario, beneficios, overhead | Assumptions conservadoras: 80% adoption rate, 30% automatización"
+        notes="Desglose de ahorros: Automatización (45%), Eficiencia operativa (30%), Mejora FCR (15%), Reducción attrition (7.5%), Otros (2.5%) | Payback calculado sobre flujo de caja acumulado"
+        lastUpdated="Enero 2025"
+      />
     </div>
   );
 };

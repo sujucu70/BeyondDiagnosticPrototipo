@@ -1,6 +1,7 @@
 import React from 'react';
 import { BenchmarkDataPoint } from '../types';
 import { TrendingUp, TrendingDown, HelpCircle } from 'lucide-react';
+import MethodologyFooter from './MethodologyFooter';
 
 interface BenchmarkReportProps {
   data: BenchmarkDataPoint[];
@@ -76,6 +77,14 @@ const BenchmarkReport: React.FC<BenchmarkReportProps> = ({ data }) => {
             </table>
         </div>
       </div>
+      
+      {/* Methodology Footer */}
+      <MethodologyFooter
+        sources="Gartner CX Benchmarking Study 2024 (N=250 contact centers) | Forrester Customer Service Benchmark 2024 | Datos internos (Q4 2024)"
+        methodology="Peer Group: Contact centers en Telco/Tech, 200-500 agentes, Europa Occidental, omnichannel | Percentiles calculados sobre distribución de peer group | Fully-loaded costs incluyen overhead"
+        notes="Benchmarks actualizados trimestralmente | Próxima actualización: Abril 2025 | Variabilidad por mix de canales y complejidad de productos ajustada por volumen"
+        lastUpdated="Enero 2025"
+      />
     </div>
   );
 };

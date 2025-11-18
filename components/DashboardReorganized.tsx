@@ -6,8 +6,8 @@ import { ArrowLeft, BarChart2, Lightbulb, Target } from 'lucide-react';
 
 import HealthScoreGaugeEnhanced from './HealthScoreGaugeEnhanced';
 import DimensionCard from './DimensionCard';
-import HeatmapEnhanced from './HeatmapEnhanced';
-import OpportunityMatrixEnhanced from './OpportunityMatrixEnhanced';
+import HeatmapPro from './HeatmapPro';
+import OpportunityMatrixPro from './OpportunityMatrixPro';
 import Roadmap from './Roadmap';
 import EconomicModelEnhanced from './EconomicModelEnhanced';
 import BenchmarkReport from './BenchmarkReport';
@@ -215,7 +215,7 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <HeatmapEnhanced data={analysisData.heatmap} />
+            <HeatmapPro data={analysisData.heatmap} />
           </motion.div>
         </section>
 
@@ -226,7 +226,7 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <OpportunityMatrixEnhanced data={analysisData.opportunityMatrix} />
+            <OpportunityMatrixPro data={analysisData.opportunities} />
           </motion.div>
         </section>
 
