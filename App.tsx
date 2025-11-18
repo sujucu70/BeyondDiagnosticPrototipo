@@ -1,10 +1,10 @@
 import React from 'react';
-import DataRequestToolEnhanced from './components/DataRequestToolEnhanced';
+import SinglePageDataRequest from './components/SinglePageDataRequest';
 
 const App: React.FC = () => {
   return (
     <main className="min-h-screen">
-      <DataRequestToolEnhanced />
+      <SinglePageDataRequest />
     </main>
   );
 };
