@@ -1,68 +1,164 @@
-// McKinsey-style Professional Color Palette
-// Based on consulting industry best practices
+/**
+ * BeyondCX.ai Corporate Color Palette
+ * 
+ * Colores corporativos de BeyondCX.ai para uso en backgrounds, cards, gradientes
+ * Mantiene código de colores verde/amarillo/rojo para claridad en métricas
+ */
+
+// ============================================
+// COLORES CORPORATIVOS BEYONDCX.AI
+// ============================================
+
+export const brandColors = {
+  // Colores corporativos principales
+  accent1: '#E4E3E3', // Gris claro
+  accent2: '#B1B1B0', // Gris medio
+  accent3: '#6D84E3', // Azul corporativo
+  accent4: '#3F3F3F', // Gris oscuro
+  accent5: '#000000', // Negro
+  
+  // Variantes del azul corporativo para gradientes
+  primary: '#6D84E3',
+  primaryLight: '#8A9EE8',
+  primaryDark: '#5669D0',
+  primaryPale: '#E8EBFA',
+  
+  // Variantes de grises corporativos
+  grayLight: '#E4E3E3',
+  grayMedium: '#B1B1B0',
+  grayDark: '#3F3F3F',
+  grayDarkest: '#000000',
+};
+
+// ============================================
+// CÓDIGO DE COLORES PARA MÉTRICAS (Mantener)
+// ============================================
+
+export const statusColors = {
+  // Verde para positivo/excelente
+  success: '#059669',
+  successLight: '#D1FAE5',
+  successDark: '#047857',
+  
+  // Amarillo/Ámbar para warning/oportunidad
+  warning: '#D97706',
+  warningLight: '#FEF3C7',
+  warningDark: '#B45309',
+  
+  // Rojo para crítico/negativo
+  critical: '#DC2626',
+  criticalLight: '#FEE2E2',
+  criticalDark: '#B91C1C',
+  
+  // Azul para información
+  info: '#3B82F6',
+  infoLight: '#DBEAFE',
+  infoDark: '#1D4ED8',
+};
+
+// ============================================
+// NEUTRALES (Usar grises corporativos)
+// ============================================
+
+export const neutralColors = {
+  darkest: brandColors.accent5,  // #000000
+  dark: brandColors.accent4,     // #3F3F3F
+  medium: brandColors.accent2,   // #B1B1B0
+  light: brandColors.accent1,    // #E4E3E3
+  lightest: '#F9FAFB',
+  white: '#FFFFFF',
+};
+
+// ============================================
+// COLORES LEGACY (Para compatibilidad)
+// ============================================
 
 export const colors = {
-  // Primary Colors (Strategic Use)
+  // Primary Colors (Strategic Use) - Usar corporativo
   primary: {
-    blue: '#1E40AF',      // Corporate blue - main insights, key data
-    green: '#059669',     // Positive, achievements, targets met
-    red: '#DC2626',       // Critical, gaps, alerts
-    amber: '#D97706',     // Warning, opportunities, medium priority
+    blue: brandColors.primary,    // Azul corporativo
+    green: statusColors.success,  // Verde para positivo
+    red: statusColors.critical,   // Rojo para crítico
+    amber: statusColors.warning,  // Ámbar para warning
   },
 
-  // Neutral Colors (Context)
+  // Neutral Colors (Context) - Usar grises corporativos
   neutral: {
-    darkest: '#0F172A',   // Headings, primary text
-    dark: '#1E293B',      // Body text
-    medium: '#64748B',    // Secondary text, labels
-    light: '#CBD5E1',     // Borders, dividers
-    lightest: '#F1F5F9',  // Backgrounds, subtle fills
-    white: '#FFFFFF',     // Cards, containers
+    darkest: neutralColors.darkest,
+    dark: neutralColors.dark,
+    medium: neutralColors.medium,
+    light: neutralColors.light,
+    lightest: neutralColors.lightest,
+    white: neutralColors.white,
   },
 
   // Semantic Colors
   semantic: {
-    success: '#10B981',   // Success states
-    warning: '#F59E0B',   // Warning states
-    error: '#EF4444',     // Error states
-    info: '#3B82F6',      // Info states
+    success: statusColors.success,
+    warning: statusColors.warning,
+    error: statusColors.critical,
+    info: brandColors.primary,  // Usar azul corporativo
   },
 
-  // Chart Colors (Data Visualization)
+  // Chart Colors (Data Visualization) - Usar corporativo
   chart: {
-    primary: '#1E40AF',
-    secondary: '#059669',
-    tertiary: '#D97706',
+    primary: brandColors.primary,
+    secondary: statusColors.success,
+    tertiary: statusColors.warning,
     quaternary: '#8B5CF6',
     quinary: '#EC4899',
   },
 
-  // Heatmap Scale (Performance)
+  // Heatmap Scale (Performance) - Mantener código de colores
   heatmap: {
-    critical: '#DC2626',    // <70 - Critical
-    low: '#F59E0B',         // 70-80 - Below average
-    medium: '#FCD34D',      // 80-85 - Average
-    good: '#34D399',        // 85-90 - Good
-    excellent: '#10B981',   // 90-95 - Excellent
-    bestInClass: '#059669', // 95+ - Best in class
+    critical: statusColors.critical,    // <70 - Critical
+    low: statusColors.warning,          // 70-80 - Below average
+    medium: '#FCD34D',                  // 80-85 - Average
+    good: '#34D399',                    // 85-90 - Good
+    excellent: statusColors.success,    // 90-95 - Excellent
+    bestInClass: statusColors.successDark, // 95+ - Best in class
   },
 
-  // Priority Matrix
+  // Priority Matrix - Usar corporativo + código de colores
   matrix: {
-    quickWins: '#10B981',      // High impact, high feasibility
-    strategic: '#3B82F6',      // High impact, low feasibility
-    consider: '#F59E0B',       // Low impact, high feasibility
-    discard: '#94A3B8',        // Low impact, low feasibility
+    quickWins: statusColors.success,      // High impact, high feasibility
+    strategic: brandColors.primary,       // High impact, low feasibility - Azul corporativo
+    consider: statusColors.warning,       // Low impact, high feasibility
+    discard: neutralColors.medium,        // Low impact, low feasibility - Gris corporativo
   },
 
-  // Gradients (For hero sections, highlights)
+  // Gradients (For hero sections, highlights) - Usar corporativo
   gradients: {
-    primary: 'from-blue-600 to-indigo-800',
+    primary: `from-[${brandColors.primaryDark}] via-[${brandColors.primary}] to-[${brandColors.primaryLight}]`,
     success: 'from-green-500 to-emerald-600',
     warning: 'from-amber-500 to-orange-600',
-    info: 'from-blue-500 to-cyan-600',
+    info: `from-[${brandColors.primary}] to-cyan-600`,
   },
 };
+
+// ============================================
+// GRADIENTES CORPORATIVOS
+// ============================================
+
+export const gradients = {
+  // Gradiente principal con azul corporativo
+  primary: `linear-gradient(135deg, ${brandColors.primary} 0%, ${brandColors.primaryDark} 100%)`,
+  
+  // Gradiente hero con azul corporativo
+  hero: `linear-gradient(135deg, ${brandColors.primaryDark} 0%, ${brandColors.primary} 50%, ${brandColors.primaryLight} 100%)`,
+  
+  // Gradiente sutil para backgrounds
+  subtle: `linear-gradient(135deg, ${brandColors.primaryPale} 0%, ${neutralColors.lightest} 100%)`,
+  
+  // Gradientes de estado (mantener para claridad)
+  success: `linear-gradient(135deg, ${statusColors.success} 0%, ${statusColors.successDark} 100%)`,
+  warning: `linear-gradient(135deg, ${statusColors.warning} 0%, ${statusColors.warningDark} 100%)`,
+  critical: `linear-gradient(135deg, ${statusColors.critical} 0%, ${statusColors.criticalDark} 100%)`,
+};
+
+// ============================================
+// HELPER FUNCTIONS
+// ============================================
 
 // Helper function to get color by value (for heatmap)
 export const getHeatmapColor = (value: number): string => {

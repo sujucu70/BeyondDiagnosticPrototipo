@@ -95,7 +95,7 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 rounded-2xl p-8 md:p-10 shadow-2xl"
+            className="bg-gradient-to-br from-[#5669D0] via-[#6D84E3] to-[#8A9EE8] rounded-2xl p-8 md:p-10 shadow-2xl"
           >
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
               {/* Health Score */}
@@ -157,12 +157,12 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
             </div>
 
             {/* Recomendaciones */}
-            <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6">
-              <h3 className="font-bold text-xl text-blue-900 mb-4 flex items-center gap-2">
-                <Target size={24} className="text-blue-600" />
+            <div className="bg-[#E8EBFA] border-2 border-[#6D84E3] rounded-xl p-6">
+              <h3 className="font-bold text-xl text-[#3F3F3F] mb-4 flex items-center gap-2">
+                <Target size={24} className="text-[#6D84E3]" />
                 Recomendaciones
               </h3>
-              <ul className="space-y-3 text-sm text-blue-900">
+              <ul className="space-y-3 text-sm text-[#3F3F3F]">
                 {analysisData.recommendations.map((rec, i) => (
                   <motion.li
                     key={i}
@@ -172,7 +172,7 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
                     transition={{ delay: i * 0.1 }}
                     className="flex gap-2"
                   >
-                    <span className="text-blue-600 mt-1 font-bold">→</span>
+                    <span className="text-[#6D84E3] mt-1 font-bold">→</span>
                     <span>{rec.text}</span>
                   </motion.li>
                 ))}
@@ -275,7 +275,7 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
               onClick={onBack}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center gap-2 bg-blue-600 text-white px-8 py-4 rounded-xl hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl font-semibold text-lg"
+              className="inline-flex items-center gap-2 bg-[#6D84E3] text-white px-8 py-4 rounded-xl hover:bg-[#5669D0] transition-colors shadow-lg hover:shadow-xl font-semibold text-lg"
             >
               <ArrowLeft size={20} />
               Realizar Nuevo Análisis

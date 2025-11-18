@@ -150,7 +150,7 @@ const SinglePageDataRequest: React.FC = () => {
     <>
       <Toaster position="top-right" />
       
-      <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 font-sans">
+      <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-[#E8EBFA] to-slate-100 font-sans">
         <div className="w-full max-w-7xl mx-auto p-6 space-y-8">
           {/* Header */}
           <motion.div
@@ -196,14 +196,14 @@ const SinglePageDataRequest: React.FC = () => {
             className="bg-white rounded-xl shadow-lg p-8"
           >
             <h3 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-              <Database size={24} className="text-blue-600" />
+              <Database size={24} className="text-[#6D84E3]" />
               Requisitos de Datos - {TIERS[selectedTier].name}
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
-                  <FileText className="text-blue-600" size={20} />
+                <div className="w-10 h-10 rounded-lg bg-[#E8EBFA] flex items-center justify-center flex-shrink-0">
+                  <FileText className="text-[#6D84E3]" size={20} />
                 </div>
                 <div>
                   <h4 className="font-semibold text-slate-900 mb-1">Formato</h4>
@@ -247,7 +247,7 @@ const SinglePageDataRequest: React.FC = () => {
               }}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="mb-6 flex items-center justify-center gap-2 w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors shadow-md font-semibold"
+              className="mb-6 flex items-center justify-center gap-2 w-full bg-[#6D84E3] text-white px-6 py-3 rounded-lg hover:bg-[#5669D0] transition-colors shadow-md font-semibold"
             >
               <Download size={20} />
               Descargar Plantilla CSV
@@ -346,7 +346,7 @@ const SinglePageDataRequest: React.FC = () => {
               {/* 1. Upload File */}
               <div>
                 <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
-                  <UploadCloud size={20} className="text-blue-600" />
+                  <UploadCloud size={20} className="text-[#6D84E3]" />
                   Opción 1: Subir Archivo
                 </h3>
                 <div
@@ -355,7 +355,7 @@ const SinglePageDataRequest: React.FC = () => {
                   onDrop={onDrop}
                   className={clsx(
                     'relative border-2 border-dashed rounded-xl p-12 text-center transition-all duration-300',
-                    isDragging && 'border-blue-500 bg-blue-50 scale-105 shadow-lg',
+                    isDragging && 'border-[#6D84E3] bg-[#E8EBFA] scale-105 shadow-lg',
                     !isDragging && 'border-slate-300 bg-slate-50 hover:border-slate-400',
                     isActionInProgress && 'opacity-50 cursor-not-allowed'
                   )}
@@ -375,10 +375,10 @@ const SinglePageDataRequest: React.FC = () => {
                     >
                       <UploadCloud className={clsx(
                         "w-16 h-16 mb-4",
-                        isDragging ? "text-blue-500" : "text-slate-400"
+                        isDragging ? "text-[#6D84E3]" : "text-slate-400"
                       )} />
                     </motion.div>
-                    <span className="font-semibold text-lg text-blue-600 mb-1">
+                    <span className="font-semibold text-lg text-[#6D84E3] mb-1">
                       Haz clic para subir un fichero
                     </span>
                     <span className="text-slate-500">o arrástralo aquí</span>
@@ -393,11 +393,11 @@ const SinglePageDataRequest: React.FC = () => {
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mt-4 flex items-center justify-between gap-3 p-4 bg-blue-50 border-2 border-blue-200 rounded-xl"
+                    className="mt-4 flex items-center justify-between gap-3 p-4 bg-[#E8EBFA] border-2 border-[#6D84E3] rounded-xl"
                   >
                     <div className="flex items-center gap-3 min-w-0 flex-1">
-                      <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <File className="w-6 h-6 text-blue-600" />
+                      <div className="w-12 h-12 bg-[#E8EBFA] rounded-lg flex items-center justify-center flex-shrink-0">
+                        <File className="w-6 h-6 text-[#6D84E3]" />
                       </div>
                       <div className="flex flex-col min-w-0">
                         <span className="font-semibold text-sm truncate">{file.name}</span>
@@ -443,7 +443,7 @@ const SinglePageDataRequest: React.FC = () => {
                       setFile(null);
                     }}
                     disabled={isActionInProgress}
-                    className="w-full pl-12 pr-4 py-4 border-2 border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition disabled:bg-slate-100 text-sm"
+                    className="w-full pl-12 pr-4 py-4 border-2 border-slate-300 rounded-xl focus:ring-2 focus:ring-[#6D84E3] focus:border-[#6D84E3] transition disabled:bg-slate-100 text-sm"
                   />
                 </div>
 
@@ -536,7 +536,7 @@ const SinglePageDataRequest: React.FC = () => {
                   disabled={!hasDataSource || isAnalyzing}
                   whileHover={{ scale: !hasDataSource || isAnalyzing ? 1 : 1.02 }}
                   whileTap={{ scale: !hasDataSource || isAnalyzing ? 1 : 0.98 }}
-                  className="w-full flex items-center justify-center gap-2 text-white px-6 py-5 rounded-xl transition-all shadow-lg hover:shadow-xl bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-xl"
+                  className="w-full flex items-center justify-center gap-2 text-white px-6 py-5 rounded-xl transition-all shadow-lg hover:shadow-xl bg-gradient-to-r from-[#6D84E3] to-[#5669D0] hover:from-[#5669D0] hover:to-[#6D84E3] disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-xl"
                 >
                   {isAnalyzing ? (
                     <>
