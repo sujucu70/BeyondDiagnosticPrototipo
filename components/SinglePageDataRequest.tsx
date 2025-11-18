@@ -4,7 +4,7 @@ import { Download, CheckCircle, AlertCircle, FileText, Database, Clock, UploadCl
 import { TIERS, DATA_REQUIREMENTS } from '../constants';
 import { TierKey, AnalysisData } from '../types';
 import TierSelectorEnhanced from './TierSelectorEnhanced';
-import DashboardEnhanced from './DashboardEnhanced';
+import DashboardReorganized from './DashboardReorganized';
 import { generateAnalysis } from '../utils/analysisGenerator';
 import { generateSyntheticCsv } from '../utils/syntheticDataGenerator';
 import toast, { Toaster } from 'react-hot-toast';
@@ -143,7 +143,7 @@ const SinglePageDataRequest: React.FC = () => {
   };
 
   if (view === 'dashboard' && analysisData) {
-    return <DashboardEnhanced analysisData={analysisData} onBack={handleBackToForm} />;
+    return <DashboardReorganized analysisData={analysisData} onBack={handleBackToForm} />;
   }
 
   return (
