@@ -253,59 +253,73 @@ const SinglePageDataRequest: React.FC = () => {
               Descargar Plantilla CSV
             </motion.a>
 
-            {/* Data Categories - Fields Visible */}
+            {/* Data Categories - Fields as Horizontal Table */}
             <div className="space-y-4">
               {DATA_REQUIREMENTS[selectedTier].mandatory.map((category, idx) => (
                 <div
                   key={idx}
-                  className="bg-slate-50 rounded-lg p-6 border border-slate-200"
+                  className="bg-slate-50 rounded-lg p-6 border border-slate-200 overflow-x-auto"
                 >
                   <h4 className="font-bold text-slate-900 mb-4 text-lg">
                     {category.category}
                   </h4>
                   
-                  <div className="space-y-3">
-                    {category.fields.map((field, fieldIdx) => (
-                      <div
-                        key={fieldIdx}
-                        className="grid grid-cols-1 md:grid-cols-4 gap-3 p-3 bg-white rounded-lg border border-slate-200"
-                      >
-                        {/* Field Name */}
-                        <div className="flex items-center gap-2">
-                          {field.critical ? (
-                            <AlertCircle className="text-red-500 flex-shrink-0" size={16} />
-                          ) : (
-                            <CheckCircle className="text-green-500 flex-shrink-0" size={16} />
-                          )}
-                          <div>
-                            <span className="font-mono text-sm font-semibold text-slate-900 block">
-                              {field.name}
-                            </span>
-                            {field.critical && (
-                              <span className="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-semibold inline-block mt-1">
-                                Obligatorio
+                  {/* Table */}
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm border-collapse">
+                      <thead>
+                        <tr className="bg-white border-b-2 border-slate-300">
+                          <th className="text-left p-3 font-semibold text-slate-700">Campo</th>
+                          <th className="text-left p-3 font-semibold text-slate-700">Tipo</th>
+                          <th className="text-left p-3 font-semibold text-slate-700">Ejemplo</th>
+                          <th className="text-center p-3 font-semibold text-slate-700">Obligatorio</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {category.fields.map((field, fieldIdx) => (
+                          <tr
+                            key={fieldIdx}
+                            className="border-b border-slate-200 hover:bg-white transition-colors"
+                          >
+                            {/* Field Name */}
+                            <td className="p-3">
+                              <span className="font-mono text-sm font-semibold text-slate-900">
+                                {field.name}
                               </span>
-                            )}
-                          </div>
-                        </div>
+                            </td>
 
-                        {/* Type */}
-                        <div>
-                          <span className="text-xs text-slate-500 block mb-1">Tipo</span>
-                          <span className="text-sm font-semibold text-slate-700">
-                            {field.type}
-                          </span>
-                        </div>
+                            {/* Type */}
+                            <td className="p-3">
+                              <span className="text-sm text-slate-700">
+                                {field.type}
+                              </span>
+                            </td>
 
-                        {/* Example */}
-                        <div className="md:col-span-2">
-                          <span className="text-xs text-slate-500 block mb-1">Ejemplo</span>
-                          <span className="text-sm font-mono text-slate-600">
-                            {field.example}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
+                            {/* Example */}
+                            <td className="p-3">
+                              <span className="text-sm font-mono text-slate-600">
+                                {field.example}
+                              </span>
+                            </td>
+
+                            {/* Required */}
+                            <td className="p-3 text-center">
+                              {field.critical ? (
+                                <span className="inline-flex items-center gap-1 text-xs bg-red-100 text-red-700 px-3 py-1 rounded-full font-semibold">
+                                  <AlertCircle size={14} />
+                                  Sí
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1 text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-semibold">
+                                  <CheckCircle size={14} />
+                                  No
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               ))}
