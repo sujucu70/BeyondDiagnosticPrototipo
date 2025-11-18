@@ -156,13 +156,23 @@ const generateEconomicModelData = (): EconomicModelData => {
     const paybackMonths = Math.ceil((initialInvestment / annualSavings) * 12);
     const roi3yr = (((annualSavings * 3) - initialInvestment) / initialInvestment) * 100;
 
+    // Generate savings breakdown
+    const savingsBreakdown = [
+        { category: 'Automatización de tareas', amount: annualSavings * 0.45, percentage: 45 },
+        { category: 'Eficiencia operativa', amount: annualSavings * 0.30, percentage: 30 },
+        { category: 'Mejora FCR', amount: annualSavings * 0.15, percentage: 15 },
+        { category: 'Reducción attrition', amount: annualSavings * 0.075, percentage: 7.5 },
+        { category: 'Otros', amount: annualSavings * 0.025, percentage: 2.5 },
+    ];
+
     return {
         currentAnnualCost,
         futureAnnualCost,
         annualSavings,
         initialInvestment,
         paybackMonths,
-        roi3yr: parseFloat(roi3yr.toFixed(1))
+        roi3yr: parseFloat(roi3yr.toFixed(1)),
+        savingsBreakdown
     };
 };
 

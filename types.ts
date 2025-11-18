@@ -104,6 +104,7 @@ export interface EconomicModelData {
     initialInvestment: number;
     paybackMonths: number;
     roi3yr: number;
+    savingsBreakdown: { category: string; amount: number; percentage: number }[];
 }
 
 export interface BenchmarkDataPoint {
