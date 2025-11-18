@@ -8,9 +8,9 @@ import HealthScoreGaugeEnhanced from './HealthScoreGaugeEnhanced';
 import DimensionCard from './DimensionCard';
 import HeatmapPro from './HeatmapPro';
 import OpportunityMatrixPro from './OpportunityMatrixPro';
-import Roadmap from './Roadmap';
-import EconomicModelEnhanced from './EconomicModelEnhanced';
-import BenchmarkReport from './BenchmarkReport';
+import RoadmapPro from './RoadmapPro';
+import EconomicModelPro from './EconomicModelPro';
+import BenchmarkReportPro from './BenchmarkReportPro';
 
 interface DashboardReorganizedProps {
   analysisData: AnalysisData;
@@ -237,7 +237,7 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <Roadmap data={analysisData.roadmap} />
+            <RoadmapPro data={analysisData.roadmap} />
           </motion.div>
         </section>
 
@@ -248,7 +248,7 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <EconomicModelEnhanced data={analysisData.economicModel} />
+            <EconomicModelPro data={analysisData.economicModel} />
           </motion.div>
         </section>
 
@@ -259,7 +259,7 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <BenchmarkReport data={analysisData.benchmarkReport} />
+            <BenchmarkReportPro data={analysisData.benchmarkReport} />
           </motion.div>
         </section>
 
