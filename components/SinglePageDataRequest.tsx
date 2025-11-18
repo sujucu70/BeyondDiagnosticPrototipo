@@ -253,73 +253,73 @@ const SinglePageDataRequest: React.FC = () => {
               Descargar Plantilla CSV
             </motion.a>
 
-            {/* Data Categories - Fields as Horizontal Table */}
+            {/* Data Categories - Fields as Horizontal Cards */}
             <div className="space-y-4">
               {DATA_REQUIREMENTS[selectedTier].mandatory.map((category, idx) => (
                 <div
                   key={idx}
-                  className="bg-slate-50 rounded-lg p-6 border border-slate-200 overflow-x-auto"
+                  className="bg-slate-50 rounded-lg p-6 border border-slate-200"
                 >
                   <h4 className="font-bold text-slate-900 mb-4 text-lg">
                     {category.category}
                   </h4>
                   
-                  {/* Table */}
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm border-collapse">
-                      <thead>
-                        <tr className="bg-white border-b-2 border-slate-300">
-                          <th className="text-left p-3 font-semibold text-slate-700">Campo</th>
-                          <th className="text-left p-3 font-semibold text-slate-700">Tipo</th>
-                          <th className="text-left p-3 font-semibold text-slate-700">Ejemplo</th>
-                          <th className="text-center p-3 font-semibold text-slate-700">Obligatorio</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {category.fields.map((field, fieldIdx) => (
-                          <tr
-                            key={fieldIdx}
-                            className="border-b border-slate-200 hover:bg-white transition-colors"
-                          >
-                            {/* Field Name */}
-                            <td className="p-3">
-                              <span className="font-mono text-sm font-semibold text-slate-900">
-                                {field.name}
-                              </span>
-                            </td>
-
-                            {/* Type */}
-                            <td className="p-3">
-                              <span className="text-sm text-slate-700">
-                                {field.type}
-                              </span>
-                            </td>
-
-                            {/* Example */}
-                            <td className="p-3">
-                              <span className="text-sm font-mono text-slate-600">
-                                {field.example}
-                              </span>
-                            </td>
-
-                            {/* Required */}
-                            <td className="p-3 text-center">
+                  {/* Horizontal scrollable container */}
+                  <div className="overflow-x-auto pb-2">
+                    <div className="flex gap-3 min-w-max">
+                      {category.fields.map((field, fieldIdx) => (
+                        <div
+                          key={fieldIdx}
+                          className="flex-shrink-0 w-64 bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-shadow"
+                        >
+                          {/* Field Name */}
+                          <div className="mb-3">
+                            <div className="flex items-center gap-2 mb-1">
                               {field.critical ? (
-                                <span className="inline-flex items-center gap-1 text-xs bg-red-100 text-red-700 px-3 py-1 rounded-full font-semibold">
-                                  <AlertCircle size={14} />
-                                  Sí
-                                </span>
+                                <AlertCircle className="text-red-500 flex-shrink-0" size={16} />
                               ) : (
-                                <span className="inline-flex items-center gap-1 text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-semibold">
-                                  <CheckCircle size={14} />
-                                  No
-                                </span>
+                                <CheckCircle className="text-green-500 flex-shrink-0" size={16} />
                               )}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                              <span className="text-xs text-slate-500 font-semibold">CAMPO</span>
+                            </div>
+                            <span className="font-mono text-sm font-bold text-slate-900 block">
+                              {field.name}
+                            </span>
+                          </div>
+
+                          {/* Type */}
+                          <div className="mb-3">
+                            <span className="text-xs text-slate-500 font-semibold block mb-1">TIPO</span>
+                            <span className="text-sm text-slate-700 block">
+                              {field.type}
+                            </span>
+                          </div>
+
+                          {/* Example */}
+                          <div className="mb-3">
+                            <span className="text-xs text-slate-500 font-semibold block mb-1">EJEMPLO</span>
+                            <span className="text-sm font-mono text-slate-600 block break-words">
+                              {field.example}
+                            </span>
+                          </div>
+
+                          {/* Required Badge */}
+                          <div>
+                            {field.critical ? (
+                              <span className="inline-flex items-center gap-1 text-xs bg-red-100 text-red-700 px-3 py-1.5 rounded-full font-semibold">
+                                <AlertCircle size={12} />
+                                Obligatorio
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 text-xs bg-green-100 text-green-700 px-3 py-1.5 rounded-full font-semibold">
+                                <CheckCircle size={12} />
+                                Opcional
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               ))}
