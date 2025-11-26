@@ -9,7 +9,7 @@ interface HeatmapProProps {
   data: HeatmapDataPoint[];
 }
 
-type SortKey = 'skill' | 'fcr' | 'aht' | 'csat' | 'quality' | 'average';
+type SortKey = 'skill' | 'fcr' | 'aht' | 'csat' | 'quality' | 'average' | 'cost';
 type SortOrder = 'asc' | 'desc';
 
 interface TooltipData {
@@ -110,6 +110,10 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
     }, 0);
     const percentage = Math.round((belowP75 / totalMetrics) * 100);
     
+    // Calculate total annual cost
+    const totalCost = data.reduce((sum, item) => sum + (item.annual_cost || 0), 0);
+    const costStr = `€${Math.round(totalCost / 1000)}K`;
+    
     // Find metric with most issues
     const metricCounts = metrics.map(({ key, label }) => ({
       label,
@@ -118,7 +122,7 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
     metricCounts.sort((a, b) => b.count - a.count);
     const topMetric = metricCounts[0];
 
-    return `${percentage}% de las métricas están por debajo de P75, con ${topMetric.label} mostrando la mayor oportunidad de mejora`;
+    return `${percentage}% de las métricas están por debajo de P75, representando ${costStr} en coste anual, con ${topMetric.label} mostrando la mayor oportunidad de mejora`;
   }, [data]);
 
   // Calculate averages
@@ -149,6 +153,9 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
     } else if (sortKey === 'average') {
       aValue = a.average;
       bValue = b.average;
+    } else if (sortKey === 'cost') {
+      aValue = a.annual_cost || 0;
+      bValue = b.annual_cost || 0;
     } else {
       aValue = a.metrics[sortKey];
       bValue = b.metrics[sortKey];
@@ -285,38 +292,47 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
                   <ArrowUpDown size={14} className="text-slate-400" />
                 </div>
               </th>
+              <th
+                onClick={() => handleSort('cost')}
+                className="p-4 font-semibold text-slate-700 text-center cursor-pointer hover:bg-slate-100 transition-colors border-b-2 border-slate-300"
+              >
+                <div className="flex items-center justify-center gap-2">
+                  <span>COSTE ANUAL</span>
+                  <ArrowUpDown size={14} className="text-slate-400" />
+                </div>
+              </th>
             </tr>
           </thead>
           <tbody>
             <AnimatePresence>
-              {sortedData.map(({ skill, metrics: skillMetrics, average }, index) => (
+              {sortedData.map((item, index) => (
                 <motion.tr
-                  key={skill}
+                  key={item.skill}
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
                   transition={{ delay: index * 0.03 }}
-                  onMouseEnter={() => setHoveredRow(skill)}
+                  onMouseEnter={() => setHoveredRow(item.skill)}
                   onMouseLeave={() => setHoveredRow(null)}
                   className={clsx(
                     'border-b border-slate-200 transition-colors',
-                    hoveredRow === skill && 'bg-blue-50'
+                    hoveredRow === item.skill && 'bg-blue-50'
                   )}
                 >
                   <td className="p-4 font-semibold text-slate-800 border-r border-slate-200">
-                    {skill}
+                    {item.skill}
                   </td>
                   {metrics.map(({ key }) => {
-                    const value = skillMetrics[key];
+                    const value = item.metrics[key];
                     return (
                       <td
                         key={key}
                         className={clsx(
                           'p-4 font-bold text-center cursor-pointer transition-all relative',
                           getCellColor(value),
-                          hoveredRow === skill && 'scale-105 shadow-lg ring-2 ring-blue-400'
+                          hoveredRow === item.skill && 'scale-105 shadow-lg ring-2 ring-blue-400'
                         )}
-                        onMouseEnter={(e) => handleCellHover(skill, key.toUpperCase(), value, e)}
+                        onMouseEnter={(e) => handleCellHover(item.skill, key.toUpperCase(), value, e)}
                         onMouseLeave={handleCellLeave}
                       >
                         <span>{value}</span>
@@ -325,7 +341,26 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
                     );
                   })}
                   <td className="p-4 font-bold text-center bg-slate-100 text-slate-700">
-                    {average.toFixed(1)}
+                    {item.average.toFixed(1)}
+                  </td>
+                  <td className="p-4 text-center">
+                    {item.annual_cost ? (
+                      <div className="flex items-center justify-center gap-2">
+                        <span className="font-semibold text-slate-800">
+                          €{Math.round(item.annual_cost / 1000)}K
+                        </span>
+                        <div className={clsx(
+                          'w-3 h-3 rounded-full',
+                          item.annual_cost >= sortedData.reduce((sum, d) => sum + (d.annual_cost || 0), 0) / sortedData.length * 1.2
+                            ? 'bg-red-500'  // Alto coste (>120% del promedio)
+                            : item.annual_cost >= sortedData.reduce((sum, d) => sum + (d.annual_cost || 0), 0) / sortedData.length * 0.8
+                            ? 'bg-amber-400'  // Coste medio (80-120% del promedio)
+                            : 'bg-green-500'  // Bajo coste (<80% del promedio)
+                        )} />
+                      </div>
+                    ) : (
+                      <span className="text-slate-400 text-xs">N/A</span>
+                    )}
                   </td>
                 </motion.tr>
               ))}

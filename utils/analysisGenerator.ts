@@ -154,15 +154,28 @@ const identifyPeakHours = (hourly_distribution: number[]): number[] => {
 
 const generateHeatmapData = (): HeatmapDataPoint[] => {
     const skills = ['Ventas Inbound', 'Soporte Técnico N1', 'Facturación', 'Retención'];
-    return skills.map(skill => ({
-        skill,
-        metrics: {
-            fcr: randomInt(65, 95),
-            aht: randomInt(70, 98), 
-            csat: randomInt(75, 99),
-            quality: randomInt(80, 97)
-        }
-    }));
+    const COST_PER_HOUR = 25; // €25/hora (estándar industria)
+    const COST_PER_SECOND = COST_PER_HOUR / 3600;
+    
+    return skills.map(skill => {
+        const volume = randomInt(800, 2500); // Volumen mensual
+        const aht_seconds = randomInt(280, 550); // AHT en segundos
+        const annual_volume = volume * 12; // Volumen anual
+        const annual_cost = Math.round(annual_volume * aht_seconds * COST_PER_SECOND);
+        
+        return {
+            skill,
+            volume,
+            aht_seconds,
+            metrics: {
+                fcr: randomInt(65, 95),
+                aht: randomInt(70, 98), 
+                csat: randomInt(75, 99),
+                quality: randomInt(80, 97)
+            },
+            annual_cost
+        };
+    });
 };
 
 // v2.0: Añadir segmentación de cliente

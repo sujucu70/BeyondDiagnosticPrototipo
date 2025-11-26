@@ -83,12 +83,15 @@ export interface DimensionAnalysis {
 
 export interface HeatmapDataPoint {
   skill: string;
+  volume: number;  // Volumen mensual de interacciones
+  aht_seconds: number;  // AHT en segundos (para cálculo de coste)
   metrics: {
     fcr: number;    // First Contact Resolution score (0-100)
     aht: number;    // Average Handle Time score (0-100, donde 100 es óptimo)
     csat: number;   // Customer Satisfaction score (0-100)
     quality: number; // Quality Assurance score (0-100)
   };
+  annual_cost?: number;  // Coste anual en euros (opcional)
 }
 
 // v2.0: Añadir segmentación de cliente
