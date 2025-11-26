@@ -1,11 +1,12 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Opportunity } from '../types';
+import { Opportunity, HeatmapDataPoint } from '../types';
 import { HelpCircle, TrendingUp, Zap, DollarSign, X, Target, AlertCircle } from 'lucide-react';
 import MethodologyFooter from './MethodologyFooter';
 
 interface OpportunityMatrixProProps {
   data: Opportunity[];
+  heatmapData?: HeatmapDataPoint[];  // v2.0: Datos de variabilidad para ajustar factibilidad
 }
 
 interface QuadrantInfo {
@@ -18,20 +19,40 @@ interface QuadrantInfo {
   icon: string;
 }
 
-const OpportunityMatrixPro: React.FC<OpportunityMatrixProProps> = ({ data }) => {
+const OpportunityMatrixPro: React.FC<OpportunityMatrixProProps> = ({ data, heatmapData }) => {
   const [selectedOpportunity, setSelectedOpportunity] = useState<Opportunity | null>(null);
   const [hoveredOpportunity, setHoveredOpportunity] = useState<string | null>(null);
 
   const maxSavings = Math.max(...data.map(d => d.savings), 1);
 
+  // v2.0: Ajustar factibilidad con automation readiness del heatmap
+  const adjustFeasibilityWithReadiness = (opp: Opportunity): number => {
+    if (!heatmapData) return opp.feasibility;
+    
+    // Buscar skill relacionada en heatmap
+    const relatedSkill = heatmapData.find(h => 
+      opp.name.toLowerCase().includes(h.skill.toLowerCase()) ||
+      h.skill.toLowerCase().includes(opp.name.toLowerCase().split(' ')[0])
+    );
+    
+    if (!relatedSkill) return opp.feasibility;
+    
+    // Ajustar factibilidad: readiness alto aumenta factibilidad, bajo la reduce
+    const readinessFactor = relatedSkill.automation_readiness / 100; // 0-1
+    const adjustedFeasibility = opp.feasibility * 0.6 + (readinessFactor * 10) * 0.4;
+    
+    return Math.min(10, Math.max(1, adjustedFeasibility));
+  };
+
   // Calculate priorities (Impact × Feasibility × Savings)
   const dataWithPriority = useMemo(() => {
     return data.map(opp => {
-      const priorityScore = (opp.impact / 10) * (opp.feasibility / 10) * (opp.savings / maxSavings);
-      return { ...opp, priorityScore };
+      const adjustedFeasibility = adjustFeasibilityWithReadiness(opp);
+      const priorityScore = (opp.impact / 10) * (adjustedFeasibility / 10) * (opp.savings / maxSavings);
+      return { ...opp, adjustedFeasibility, priorityScore };
     }).sort((a, b) => b.priorityScore - a.priorityScore)
       .map((opp, index) => ({ ...opp, priority: index + 1 }));
-  }, [data, maxSavings]);
+  }, [data, maxSavings, heatmapData]);
 
   // Calculate portfolio summary
   const portfolioSummary = useMemo(() => {
@@ -274,12 +295,27 @@ const OpportunityMatrixPro: React.FC<OpportunityMatrixProProps> = ({ data }) => 
               onClick={() => setSelectedOpportunity(opp)}
             >
               <div 
-                className={`w-full h-full rounded-full transition-all flex items-center justify-center ${
+                className={`w-full h-full rounded-full transition-all flex items-center justify-center relative ${
                   isSelected ? 'ring-4 ring-blue-400' : ''
                 } ${getQuadrantColor(opp.impact, opp.feasibility)}`}
                 style={{ opacity: isHovered || isSelected ? 0.95 : 0.75 }}
               >
                 <span className="text-white font-bold text-lg">#{opp.priority}</span>
+                {/* v2.0: Indicador de variabilidad si hay datos de heatmap */}
+                {heatmapData && (() => {
+                  const relatedSkill = heatmapData.find(h => 
+                    opp.name.toLowerCase().includes(h.skill.toLowerCase()) ||
+                    h.skill.toLowerCase().includes(opp.name.toLowerCase().split(' ')[0])
+                  );
+                  if (relatedSkill && relatedSkill.automation_readiness < 60) {
+                    return (
+                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center border-2 border-white">
+                        <AlertCircle size={12} className="text-white" />
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
               </div>
               
               {/* Hover Tooltip */}

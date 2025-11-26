@@ -163,6 +163,22 @@ const generateHeatmapData = (): HeatmapDataPoint[] => {
         const annual_volume = volume * 12; // Volumen anual
         const annual_cost = Math.round(annual_volume * aht_seconds * COST_PER_SECOND);
         
+        // v2.0: Generar métricas de variabilidad
+        const cv_aht = randomInt(15, 55); // CV AHT (15-55%)
+        const cv_fcr = randomInt(12, 50); // CV FCR (12-50%)
+        const cv_csat = randomInt(18, 60); // CV CSAT (18-60%)
+        const entropy_input = randomInt(10, 65); // Entropía (10-65)
+        const escalation_rate = randomInt(5, 45); // Escalación (5-45%)
+        
+        // Calcular Automation Readiness Score
+        const automation_readiness = Math.round(
+            (100 - cv_aht) * 0.30 +
+            (100 - cv_fcr) * 0.25 +
+            (100 - cv_csat) * 0.20 +
+            (100 - entropy_input) * 0.15 +
+            (100 - escalation_rate) * 0.10
+        );
+        
         return {
             skill,
             volume,
@@ -173,7 +189,15 @@ const generateHeatmapData = (): HeatmapDataPoint[] => {
                 csat: randomInt(75, 99),
                 quality: randomInt(80, 97)
             },
-            annual_cost
+            annual_cost,
+            variability: {
+                cv_aht,
+                cv_fcr,
+                cv_csat,
+                entropy_input,
+                escalation_rate
+            },
+            automation_readiness
         };
     });
 };

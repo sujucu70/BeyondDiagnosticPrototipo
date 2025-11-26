@@ -92,6 +92,17 @@ export interface HeatmapDataPoint {
     quality: number; // Quality Assurance score (0-100)
   };
   annual_cost?: number;  // Coste anual en euros (opcional)
+  
+  // v2.0: Métricas de variabilidad interna
+  variability: {
+    cv_aht: number;         // Coeficiente de variación AHT (%)
+    cv_fcr: number;         // Variabilidad FCR (%)
+    cv_csat: number;        // Variabilidad CSAT (%)
+    entropy_input: number;  // Entropía de motivos de contacto (0-100)
+    escalation_rate: number; // % de casos escalados
+  };
+  
+  automation_readiness: number;  // Score de automatizabilidad (0-100)
 }
 
 // v2.0: Añadir segmentación de cliente

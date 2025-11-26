@@ -7,6 +7,7 @@ import { ArrowLeft, BarChart2, Lightbulb, Target } from 'lucide-react';
 import HealthScoreGaugeEnhanced from './HealthScoreGaugeEnhanced';
 import DimensionCard from './DimensionCard';
 import HeatmapPro from './HeatmapPro';
+import VariabilityHeatmap from './VariabilityHeatmap';
 import OpportunityMatrixPro from './OpportunityMatrixPro';
 import RoadmapPro from './RoadmapPro';
 import EconomicModelPro from './EconomicModelPro';
@@ -240,7 +241,7 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
           </section>
         )}
 
-        {/* 6. HEATMAP */}
+        {/* 6. HEATMAP DE PERFORMANCE COMPETITIVO */}
         <section>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -251,18 +252,29 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
           </motion.div>
         </section>
 
-        {/* 7. OPPORTUNITY MATRIX */}
+        {/* 7. HEATMAP DE VARIABILIDAD INTERNA */}
         <section>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <OpportunityMatrixPro data={analysisData.opportunityMatrix} />
+            <VariabilityHeatmap data={analysisData.heatmap} />
           </motion.div>
         </section>
 
-        {/* 8. ROADMAP */}
+        {/* 8. OPPORTUNITY MATRIX */}
+        <section>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <OpportunityMatrixPro data={analysisData.opportunityMatrix} heatmapData={analysisData.heatmap} />
+          </motion.div>
+        </section>
+
+        {/* 9. ROADMAP */}
         <section>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -273,7 +285,7 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
           </motion.div>
         </section>
 
-        {/* 9. ECONOMIC MODEL */}
+        {/* 10. ECONOMIC MODEL */}
         <section>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -284,7 +296,7 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
           </motion.div>
         </section>
 
-        {/* 10. BENCHMARK REPORT */}
+        {/* 11. BENCHMARK REPORT */}
         <section>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
