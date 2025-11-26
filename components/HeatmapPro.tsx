@@ -212,7 +212,7 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
               {dynamicTitle}
             </p>
             <p className="text-sm text-slate-500 mt-1">
-              Análisis de 12 skills críticos vs. benchmarks de industria (P75) | Datos: Q4 2024 | N=15,000 interacciones
+              Análisis de Performance Competitivo: Skills críticos vs. benchmarks de industria (P75) | Datos: Q4 2024 | N=15,000 interacciones
             </p>
           </div>
         </div>
