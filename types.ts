@@ -42,14 +42,43 @@ export interface Kpi {
   changeType?: 'positive' | 'negative' | 'neutral';
 }
 
+// v2.0: Dimensiones reducidas de 8 a 6
+export type DimensionName = 
+  | 'volumetry_distribution'  // Volumetría y Distribución Horaria (fusión + ampliación)
+  | 'performance'             // Rendimiento
+  | 'satisfaction'            // Satisfacción
+  | 'economy'                 // Economía
+  | 'efficiency'              // Eficiencia (fusiona efficiency + effectiveness)
+  | 'benchmark';              // Benchmark
+
+export interface SubFactor {
+  name: string;
+  displayName: string;
+  score: number;
+  weight: number;
+  description: string;
+  details?: Record<string, any>;
+}
+
+export interface DistributionData {
+  hourly: number[];  // 24 valores (0-23h)
+  off_hours_pct: number;
+  peak_hours: number[];
+  weekday_distribution?: number[];  // 7 valores (0=domingo, 6=sábado)
+}
+
 export interface DimensionAnalysis {
   id: string;
+  name: DimensionName;
   title: string;
   score: number;
+  percentile?: number;
   summary: string;
   kpi: Kpi;
-  // FIX: Added icon property to be used in UI components.
   icon: LucideIcon;
+  // v2.0: Nuevos campos
+  sub_factors?: SubFactor[];  // Para Agentic Readiness
+  distribution_data?: DistributionData;  // Para Volumetría
 }
 
 export interface HeatmapDataPoint {
@@ -62,6 +91,9 @@ export interface HeatmapDataPoint {
   };
 }
 
+// v2.0: Añadir segmentación de cliente
+export type CustomerSegment = 'high' | 'medium' | 'low';
+
 export interface Opportunity {
   id: string;
   name: string;
@@ -69,6 +101,7 @@ export interface Opportunity {
   feasibility: number;
   savings: number;
   dimensionId: string;
+  customer_segment?: CustomerSegment;  // v2.0: Nuevo campo opcional
 }
 
 export enum RoadmapPhase {
@@ -85,6 +118,7 @@ export interface RoadmapInitiative {
   investment: number;
   resources: string[];
   dimensionId: string;
+  risk?: 'high' | 'medium' | 'low';  // v2.0: Nuevo campo
 }
 
 export interface Finding {
@@ -95,6 +129,7 @@ export interface Finding {
 export interface Recommendation {
   text: string;
   dimensionId: string;
+  priority?: number;  // v2.0: Prioridad 1-3
 }
 
 export interface EconomicModelData {
@@ -105,6 +140,8 @@ export interface EconomicModelData {
     paybackMonths: number;
     roi3yr: number;
     savingsBreakdown: { category: string; amount: number; percentage: number }[];
+    npv?: number;  // v2.0: Net Present Value
+    costBreakdown?: { category: string; amount: number; percentage: number }[];  // v2.0
 }
 
 export interface BenchmarkDataPoint {
@@ -114,6 +151,19 @@ export interface BenchmarkDataPoint {
     industryValue: number;
     industryDisplay: string;
     percentile: number;
+    p25?: number;  // v2.0: Percentil 25
+    p50?: number;  // v2.0: Percentil 50 (mediana)
+    p75?: number;  // v2.0: Percentil 75
+    p90?: number;  // v2.0: Percentil 90
+}
+
+// v2.0: Nuevo tipo para Agentic Readiness Score
+export interface AgenticReadinessResult {
+  score: number;  // 0-10
+  sub_factors: SubFactor[];
+  tier: TierKey;
+  confidence: 'high' | 'medium' | 'low';
+  interpretation: string;
 }
 
 export interface AnalysisData {
@@ -128,4 +178,5 @@ export interface AnalysisData {
   roadmap: RoadmapInitiative[];
   economicModel: EconomicModelData;
   benchmarkReport: BenchmarkDataPoint[];
+  agenticReadiness?: AgenticReadinessResult;  // v2.0: Nuevo campo
 }

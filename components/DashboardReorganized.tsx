@@ -11,6 +11,8 @@ import OpportunityMatrixPro from './OpportunityMatrixPro';
 import RoadmapPro from './RoadmapPro';
 import EconomicModelPro from './EconomicModelPro';
 import BenchmarkReportPro from './BenchmarkReportPro';
+import { AgenticReadinessBreakdown } from './AgenticReadinessBreakdown';
+import { HourlyDistributionChart } from './HourlyDistributionChart';
 
 interface DashboardReorganizedProps {
   analysisData: AnalysisData;
@@ -208,7 +210,37 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
           </motion.div>
         </section>
 
-        {/* 4. HEATMAP */}
+        {/* 4. AGENTIC READINESS (si disponible) */}
+        {analysisData.agenticReadiness && (
+          <section>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <AgenticReadinessBreakdown agenticReadiness={analysisData.agenticReadiness} />
+            </motion.div>
+          </section>
+        )}
+
+        {/* 5. DISTRIBUCIÓN HORARIA (si disponible) */}
+        {analysisData.dimensions.find(d => d.name === 'volumetry_distribution')?.distribution_data && (
+          <section>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <HourlyDistributionChart 
+                hourly={analysisData.dimensions.find(d => d.name === 'volumetry_distribution')!.distribution_data!.hourly}
+                off_hours_pct={analysisData.dimensions.find(d => d.name === 'volumetry_distribution')!.distribution_data!.off_hours_pct}
+                peak_hours={analysisData.dimensions.find(d => d.name === 'volumetry_distribution')!.distribution_data!.peak_hours}
+              />
+            </motion.div>
+          </section>
+        )}
+
+        {/* 6. HEATMAP */}
         <section>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -219,7 +251,7 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
           </motion.div>
         </section>
 
-        {/* 5. OPPORTUNITY MATRIX */}
+        {/* 7. OPPORTUNITY MATRIX */}
         <section>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -230,7 +262,7 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
           </motion.div>
         </section>
 
-        {/* 6. ROADMAP */}
+        {/* 8. ROADMAP */}
         <section>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -241,7 +273,7 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
           </motion.div>
         </section>
 
-        {/* 7. ECONOMIC MODEL */}
+        {/* 9. ECONOMIC MODEL */}
         <section>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -252,7 +284,7 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
           </motion.div>
         </section>
 
-        {/* 8. BENCHMARK REPORT */}
+        {/* 10. BENCHMARK REPORT */}
         <section>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
