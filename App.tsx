@@ -1,10 +1,10 @@
 import React from 'react';
-import SinglePageDataRequestV2 from './components/SinglePageDataRequestV2';
+import SinglePageDataRequest from './components/SinglePageDataRequest';
 
 const App: React.FC = () => {
   return (
     <main className="min-h-screen">
-      <SinglePageDataRequestV2 />
+      <SinglePageDataRequest />
     </main>
   );
 };

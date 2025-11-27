@@ -32,6 +32,13 @@ const SinglePageDataRequest: React.FC = () => {
   const [sheetUrl, setSheetUrl] = useState('');
   const [status, setStatus] = useState<UploadStatus>('idle');
   const [isDragging, setIsDragging] = useState(false);
+  
+  // Configuration states
+  const [costPerHour, setCostPerHour] = useState<number>(20);
+  const [avgCsat, setAvgCsat] = useState<number>(85);
+  const [highValueQueues, setHighValueQueues] = useState<string>('');
+  const [mediumValueQueues, setMediumValueQueues] = useState<string>('');
+  const [lowValueQueues, setLowValueQueues] = useState<string>('');
 
   const isActionInProgress = status === 'generating' || status === 'uploading' || isAnalyzing;
   const hasDataSource = file || sheetUrl || status === 'success';
@@ -128,7 +135,14 @@ const SinglePageDataRequest: React.FC = () => {
     toast.loading('Generando análisis...', { id: 'analyzing' });
     
     setTimeout(() => {
-      const analysis = generateAnalysis(selectedTier);
+      // Preparar segment_mapping si hay colas definidas
+      const segmentMapping = (highValueQueues || mediumValueQueues || lowValueQueues) ? {
+        high_value_queues: highValueQueues.split(',').map(q => q.trim()).filter(q => q),
+        medium_value_queues: mediumValueQueues.split(',').map(q => q.trim()).filter(q => q),
+        low_value_queues: lowValueQueues.split(',').map(q => q.trim()).filter(q => q)
+      } : undefined;
+      
+      const analysis = generateAnalysis(selectedTier, costPerHour, avgCsat, segmentMapping);
       setAnalysisData(analysis);
       setIsAnalyzing(false);
       toast.dismiss('analyzing');
