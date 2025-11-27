@@ -64,6 +64,8 @@ const SinglePageDataRequestV2: React.FC = () => {
   };
 
   if (view === 'dashboard' && analysisData) {
+    console.log('📊 Dashboard rendering with data:', analysisData);
+    console.log('🎯 Tier:', selectedTier);
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
         <Toaster position="top-right" />
@@ -80,7 +82,7 @@ const SinglePageDataRequestV2: React.FC = () => {
         </div>
         
         {/* Dashboard */}
-        <DashboardReorganized data={analysisData} tier={selectedTier} />
+        <DashboardReorganized analysisData={analysisData} onBack={handleBackToForm} />
       </div>
     );
   }
