@@ -9,6 +9,7 @@ import { TierKey, AnalysisData } from '../types';
 import TierSelectorEnhanced from './TierSelectorEnhanced';
 import DataInputRedesigned from './DataInputRedesigned';
 import DashboardReorganized from './DashboardReorganized';
+import DashboardSimple from './DashboardSimple';
 import { generateAnalysis } from '../utils/analysisGenerator';
 
 const SinglePageDataRequestV2: React.FC = () => {
@@ -81,8 +82,8 @@ const SinglePageDataRequestV2: React.FC = () => {
           </button>
         </div>
         
-        {/* Dashboard */}
-        <DashboardReorganized analysisData={analysisData} onBack={handleBackToForm} />
+        {/* Dashboard - Using Simple version for debug */}
+        <DashboardSimple analysisData={analysisData} onBack={handleBackToForm} />
       </div>
     );
   }
