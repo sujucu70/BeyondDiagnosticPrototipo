@@ -152,7 +152,7 @@ const identifyPeakHours = (hourly_distribution: number[]): number[] => {
         .filter(idx => idx !== -1);
 };
 
-// v2.0: Generar heatmap con nueva estructura (calculado desde raw data)
+// v2.1: Generar heatmap con nueva lógica de transformación (3 dimensiones)
 const generateHeatmapData = (
     costPerHour: number = 20, 
     avgCsat: number = 85,
@@ -162,34 +162,69 @@ const generateHeatmapData = (
     const COST_PER_SECOND = costPerHour / 3600;
     
     return skills.map(skill => {
-        const volume = randomInt(800, 2500); // Volumen mensual
+        const volume = randomInt(800, 5500); // Volumen mensual (ampliado para cubrir rango de repetitividad)
         
         // Simular raw data: duration_talk, hold_time, wrap_up_time
         const avg_talk_time = randomInt(240, 450); // segundos
         const avg_hold_time = randomInt(15, 80); // segundos
         const avg_wrap_up = randomInt(10, 50); // segundos
-        const aht_seconds = avg_talk_time + avg_hold_time + avg_wrap_up; // AHT calculado
+        const aht_mean = avg_talk_time + avg_hold_time + avg_wrap_up; // AHT promedio
         
-        // Transfer rate (para FCR aproximado)
+        // Simular desviación estándar del AHT (para CV)
+        const aht_std = randomInt(Math.round(aht_mean * 0.15), Math.round(aht_mean * 0.60)); // 15-60% del AHT
+        const cv_aht = aht_std / aht_mean; // Coeficiente de Variación
+        
+        // Transfer rate (para complejidad inversa)
         const transfer_rate = randomInt(5, 35); // %
         const fcr_approx = 100 - transfer_rate; // FCR aproximado
         
         // Coste anual
         const annual_volume = volume * 12;
-        const annual_cost = Math.round(annual_volume * aht_seconds * COST_PER_SECOND);
+        const annual_cost = Math.round(annual_volume * aht_mean * COST_PER_SECOND);
         
-        // v2.0: Métricas de variabilidad (simplificadas sin CSAT ni entropía input)
-        const cv_aht = randomInt(15, 55); // CV AHT (15-55%)
-        const cv_talk_time = randomInt(20, 60); // CV Talk Time (proxy de variabilidad input)
-        const cv_hold_time = randomInt(25, 70); // CV Hold Time
+        // === NUEVA LÓGICA: 3 DIMENSIONES ===
         
-        // Calcular Automation Readiness Score (4 factores)
-        const automation_readiness = Math.round(
-            (100 - cv_aht) * 0.35 +
-            (100 - cv_talk_time) * 0.30 +
-            (100 - cv_hold_time) * 0.20 +
-            (100 - transfer_rate) * 0.15
-        );
+        // Dimensión 1: Predictibilidad (Proxy: CV del AHT)
+        // Fórmula: MAX(0, MIN(10, 10 - ((CV - 0.3) / 1.2 * 10)))
+        const predictability_score = Math.max(0, Math.min(10, 
+            10 - ((cv_aht - 0.3) / 1.2 * 10)
+        ));
+        
+        // Dimensión 2: Complejidad Inversa (Proxy: Tasa de Transferencia)
+        // Fórmula: MAX(0, MIN(10, 10 - ((T - 0.05) / 0.25 * 10)))
+        const complexity_inverse_score = Math.max(0, Math.min(10,
+            10 - ((transfer_rate / 100 - 0.05) / 0.25 * 10)
+        ));
+        
+        // Dimensión 3: Repetitividad/Impacto (Proxy: Volumen)
+        // > 5,000 = 10, < 100 = 0, interpolación lineal entre 100-5000
+        let repetitivity_score: number;
+        if (volume >= 5000) {
+            repetitivity_score = 10;
+        } else if (volume <= 100) {
+            repetitivity_score = 0;
+        } else {
+            repetitivity_score = ((volume - 100) / (5000 - 100)) * 10;
+        }
+        
+        // Agentic Readiness Score (Promedio ponderado)
+        // Pesos: Predictibilidad 40%, Complejidad 35%, Repetitividad 25%
+        const agentic_readiness_score = 
+            predictability_score * 0.40 +
+            complexity_inverse_score * 0.35 +
+            repetitivity_score * 0.25;
+        
+        // Categoría de readiness
+        let readiness_category: 'automate_now' | 'assist_copilot' | 'optimize_first';
+        if (agentic_readiness_score >= 8.0) {
+            readiness_category = 'automate_now';
+        } else if (agentic_readiness_score >= 5.0) {
+            readiness_category = 'assist_copilot';
+        } else {
+            readiness_category = 'optimize_first';
+        }
+        
+        const automation_readiness = Math.round(agentic_readiness_score * 10); // Escala 0-100 para compatibilidad
         
         // Clasificar segmento si hay mapeo
         let segment: CustomerSegment | undefined;
@@ -218,12 +253,19 @@ const generateHeatmapData = (
             },
             annual_cost,
             variability: {
-                cv_aht,
-                cv_talk_time,
-                cv_hold_time,
+                cv_aht: Math.round(cv_aht * 100), // Convertir a porcentaje
+                cv_talk_time: 0, // Deprecado en v2.1
+                cv_hold_time: 0, // Deprecado en v2.1
                 transfer_rate
             },
-            automation_readiness
+            automation_readiness,
+            // Nuevas dimensiones (v2.1)
+            dimensions: {
+                predictability: Math.round(predictability_score * 10) / 10,
+                complexity_inverse: Math.round(complexity_inverse_score * 10) / 10,
+                repetitivity: Math.round(repetitivity_score * 10) / 10
+            },
+            readiness_category
         };
     });
 };

@@ -364,26 +364,6 @@ const SinglePageDataRequest: React.FC = () => {
                 <p className="text-xs text-slate-500 mt-1">Incluye salario, cargas sociales, infraestructura, etc.</p>
               </div>
 
-              {/* Savings Target */}
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
-                  Objetivo de Ahorro
-                </label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    defaultValue="30"
-                    min="0"
-                    max="100"
-                    step="5"
-                    className="w-full pr-12 py-3 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-[#6D84E3] focus:border-[#6D84E3] transition"
-                    placeholder="30"
-                  />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 font-semibold">%</span>
-                </div>
-                <p className="text-xs text-slate-500 mt-1">Porcentaje de ahorro esperado en procesos automatizables</p>
-              </div>
-
               {/* Average CSAT (Optional) */}
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-2">

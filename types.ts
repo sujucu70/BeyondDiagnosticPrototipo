@@ -38,7 +38,6 @@ export type DataRequirementsData = Record<TierKey, DataRequirement>;
 // Configuración estática (manual)
 export interface StaticConfig {
   cost_per_hour: number;      // Coste por hora agente (€/hora, fully loaded)
-  savings_target: number;     // Objetivo de ahorro (%, ej: 30 para 30%)
   avg_csat?: number;          // CSAT promedio (0-100, opcional, manual)
   
   // Mapeo de colas/skills a segmentos de cliente
@@ -157,13 +156,20 @@ export interface HeatmapDataPoint {
   
   // v2.0: Métricas de variabilidad interna
   variability: {
-    cv_aht: number;         // Coeficiente de variación AHT (%)
-    cv_talk_time: number;   // CV Talk Time (proxy de variabilidad input)
-    cv_hold_time: number;   // CV Hold Time (%)
-    transfer_rate: number;  // % de casos transferidos (repetido para consistencia)
+    cv_aht: number;         // Coeficiente de variación del AHT (%)
+    cv_talk_time: number;   // CV Talk Time (deprecado en v2.1)
+    cv_hold_time: number;   // CV Hold Time (deprecado en v2.1)
+    transfer_rate: number;  // Tasa de transferencia (%)
   };
+  automation_readiness: number;  // Score 0-100 (calculado)
   
-  automation_readiness: number;  // Score de automatizabilidad (0-100)
+  // v2.1: Nuevas dimensiones para Agentic Readiness Score
+  dimensions?: {
+    predictability: number;      // Dimensión 1: Predictibilidad (0-10)
+    complexity_inverse: number;  // Dimensión 2: Complejidad Inversa (0-10)
+    repetitivity: number;        // Dimensión 3: Repetitividad/Impacto (0-10)
+  };
+  readiness_category?: 'automate_now' | 'assist_copilot' | 'optimize_first';
 }
 
 // v2.0: Segmentación de cliente

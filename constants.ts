@@ -61,9 +61,7 @@ export const DATA_REQUIREMENTS: DataRequirementsData = {
         category: '⚙️ Configuración Estática (Manual)',
         fields: [
           { name: 'cost_per_hour', type: 'Número', example: '20', critical: true },
-          { name: 'savings_target', type: 'Porcentaje', example: '30', critical: true },
-          { name: 'avg_csat', type: 'Número (0-100)', example: '85', critical: false },
-          { name: 'customer_segment', type: 'high | medium | low', example: 'high', critical: false }
+          { name: 'avg_csat', type: 'Número (0-100)', example: '85', critical: false }
         ]
       },
       {
@@ -91,7 +89,6 @@ export const DATA_REQUIREMENTS: DataRequirementsData = {
         category: '⚙️ Configuración Estática (Manual)',
         fields: [
           { name: 'cost_per_hour', type: 'Número', example: '20', critical: true },
-          { name: 'savings_target', type: 'Porcentaje', example: '30', critical: true },
           { name: 'avg_csat', type: 'Número (0-100)', example: '85', critical: false }
         ]
       },
@@ -118,8 +115,7 @@ export const DATA_REQUIREMENTS: DataRequirementsData = {
       {
         category: '⚙️ Configuración Estática (Manual)',
         fields: [
-          { name: 'cost_per_hour', type: 'Número', example: '20', critical: true },
-          { name: 'savings_target', type: 'Porcentaje', example: '30', critical: true }
+          { name: 'cost_per_hour', type: 'Número', example: '20', critical: true }
         ]
       },
       {
@@ -188,9 +184,7 @@ export const SEGMENT_MULTIPLIERS = {
 // v2.0: Configuración estática por defecto
 export const DEFAULT_STATIC_CONFIG = {
   cost_per_hour: 20,        // €20/hora (fully loaded)
-  savings_target: 30,       // 30% de ahorro
-  avg_csat: 85,             // 85/100 CSAT promedio
-  customer_segment: 'medium' as const
+  avg_csat: 85              // 85/100 CSAT promedio
 };
 
 // v2.0: Validación de período mínimo (en días)
