@@ -30,17 +30,32 @@ const SinglePageDataRequestV2: React.FC = () => {
       low_value_queues: string[];
     };
   }) => {
+    console.log('🚀 handleAnalyze called with config:', config);
+    console.log('🎯 Selected tier:', selectedTier);
+    
     setIsAnalyzing(true);
     
-    setTimeout(() => {
-      const data = generateAnalysis(selectedTier, config.costPerHour, config.avgCsat, config.segmentMapping);
-      setAnalysisData(data);
-      setIsAnalyzing(false);
-      setView('dashboard');
-      
-      // Scroll to top
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 2000);
+    // Use requestAnimationFrame to ensure state update happens
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        console.log('⏰ Generating analysis...');
+        try {
+          const data = generateAnalysis(selectedTier, config.costPerHour, config.avgCsat, config.segmentMapping);
+          console.log('✅ Analysis generated successfully');
+          
+          setAnalysisData(data);
+          setIsAnalyzing(false);
+          setView('dashboard');
+          
+          // Scroll to top
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } catch (error) {
+          console.error('❌ Error generating analysis:', error);
+          setIsAnalyzing(false);
+          alert('Error al generar el análisis: ' + (error as Error).message);
+        }
+      }, 1000);
+    });
   };
 
   const handleBackToForm = () => {
