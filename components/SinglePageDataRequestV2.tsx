@@ -21,11 +21,19 @@ const SinglePageDataRequestV2: React.FC = () => {
     setSelectedTier(tier);
   };
 
-  const handleAnalyze = () => {
+  const handleAnalyze = (config: {
+    costPerHour: number;
+    avgCsat: number;
+    segmentMapping?: {
+      high_value_queues: string[];
+      medium_value_queues: string[];
+      low_value_queues: string[];
+    };
+  }) => {
     setIsAnalyzing(true);
     
     setTimeout(() => {
-      const data = generateAnalysis(selectedTier);
+      const data = generateAnalysis(selectedTier, config.costPerHour, config.avgCsat, config.segmentMapping);
       setAnalysisData(data);
       setIsAnalyzing(false);
       setView('dashboard');

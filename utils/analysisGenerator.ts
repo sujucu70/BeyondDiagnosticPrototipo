@@ -400,7 +400,12 @@ const generateBenchmarkData = (): BenchmarkDataPoint[] => {
     ];
 };
 
-export const generateAnalysis = (tier: TierKey): AnalysisData => {
+export const generateAnalysis = (
+  tier: TierKey,
+  costPerHour: number = 20,
+  avgCsat: number = 85,
+  segmentMapping?: { high_value_queues: string[]; medium_value_queues: string[]; low_value_queues: string[] }
+): AnalysisData => {
   const overallHealthScore = randomInt(55, 95);
   
   const summaryKpis: Kpi[] = [
@@ -487,7 +492,7 @@ export const generateAnalysis = (tier: TierKey): AnalysisData => {
     dimensions,
     keyFindings: [...new Set(Array.from({ length: 3 }, () => randomFromList(KEY_FINDINGS)))],
     recommendations: [...new Set(Array.from({ length: 3 }, () => randomFromList(RECOMMENDATIONS)))],
-    heatmap: generateHeatmapData(20, 85, undefined), // cost_per_hour=20, avg_csat=85, sin segmentación por defecto
+    heatmap: generateHeatmapData(costPerHour, avgCsat, segmentMapping),
     opportunityMatrix: generateOpportunityMatrixData(),
     roadmap: generateRoadmapData(),
     economicModel: generateEconomicModelData(),
