@@ -157,7 +157,29 @@ const SinglePageDataRequest: React.FC = () => {
   };
 
   if (view === 'dashboard' && analysisData) {
-    return <DashboardReorganized analysisData={analysisData} onBack={handleBackToForm} />;
+    console.log('📊 Rendering dashboard with data:', analysisData);
+    console.log('📊 Heatmap data length:', analysisData.heatmap?.length);
+    console.log('📊 Dimensions length:', analysisData.dimensions?.length);
+    
+    try {
+      return <DashboardReorganized analysisData={analysisData} onBack={handleBackToForm} />;
+    } catch (error) {
+      console.error('❌ Error rendering dashboard:', error);
+      return (
+        <div className="min-h-screen bg-red-50 p-8">
+          <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-6">
+            <h1 className="text-2xl font-bold text-red-600 mb-4">Error al renderizar dashboard</h1>
+            <p className="text-slate-700 mb-4">{(error as Error).message}</p>
+            <button
+              onClick={handleBackToForm}
+              className="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300"
+            >
+              Volver al formulario
+            </button>
+          </div>
+        </div>
+      );
+    }
   }
 
   return (
