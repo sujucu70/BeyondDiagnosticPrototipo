@@ -243,10 +243,10 @@ const generateHeatmapData = (
             skill,
             segment,
             volume,
-            aht_seconds,
+            aht_seconds: aht_mean, // Renombrado para compatibilidad
             metrics: {
                 fcr: fcr_approx,
-                aht: Math.round(100 - ((aht_seconds - 240) / 310) * 100), // Score normalizado
+                aht: Math.round(100 - ((aht_mean - 240) / 310) * 100), // Score normalizado
                 csat: avgCsat, // CSAT manual (estático)
                 hold_time: avg_hold_time,
                 transfer_rate
