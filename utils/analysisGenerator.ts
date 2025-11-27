@@ -153,8 +153,12 @@ const identifyPeakHours = (hourly_distribution: number[]): number[] => {
 };
 
 // v2.0: Generar heatmap con nueva estructura (calculado desde raw data)
-const generateHeatmapData = (costPerHour: number = 20, avgCsat: number = 85): HeatmapDataPoint[] => {
-    const skills = ['Ventas Inbound', 'Soporte Técnico N1', 'Facturación', 'Retención'];
+const generateHeatmapData = (
+    costPerHour: number = 20, 
+    avgCsat: number = 85,
+    segmentMapping?: { high_value_queues: string[]; medium_value_queues: string[]; low_value_queues: string[] }
+): HeatmapDataPoint[] => {
+    const skills = ['Ventas Inbound', 'Soporte Técnico N1', 'Facturación', 'Retención', 'VIP Support', 'Trial Support'];
     const COST_PER_SECOND = costPerHour / 3600;
     
     return skills.map(skill => {
@@ -187,8 +191,22 @@ const generateHeatmapData = (costPerHour: number = 20, avgCsat: number = 85): He
             (100 - transfer_rate) * 0.15
         );
         
+        // Clasificar segmento si hay mapeo
+        let segment: CustomerSegment | undefined;
+        if (segmentMapping) {
+            const normalizedSkill = skill.toLowerCase();
+            if (segmentMapping.high_value_queues.some(q => normalizedSkill.includes(q.toLowerCase()))) {
+                segment = 'high';
+            } else if (segmentMapping.low_value_queues.some(q => normalizedSkill.includes(q.toLowerCase()))) {
+                segment = 'low';
+            } else {
+                segment = 'medium';
+            }
+        }
+        
         return {
             skill,
+            segment,
             volume,
             aht_seconds,
             metrics: {
@@ -427,7 +445,7 @@ export const generateAnalysis = (tier: TierKey): AnalysisData => {
     dimensions,
     keyFindings: [...new Set(Array.from({ length: 3 }, () => randomFromList(KEY_FINDINGS)))],
     recommendations: [...new Set(Array.from({ length: 3 }, () => randomFromList(RECOMMENDATIONS)))],
-    heatmap: generateHeatmapData(20, 85), // cost_per_hour=20, avg_csat=85
+    heatmap: generateHeatmapData(20, 85, undefined), // cost_per_hour=20, avg_csat=85, sin segmentación por defecto
     opportunityMatrix: generateOpportunityMatrixData(),
     roadmap: generateRoadmapData(),
     economicModel: generateEconomicModelData(),

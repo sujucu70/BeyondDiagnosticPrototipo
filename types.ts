@@ -40,7 +40,13 @@ export interface StaticConfig {
   cost_per_hour: number;      // Coste por hora agente (€/hora, fully loaded)
   savings_target: number;     // Objetivo de ahorro (%, ej: 30 para 30%)
   avg_csat?: number;          // CSAT promedio (0-100, opcional, manual)
-  customer_segment?: CustomerSegment;  // Segmentación de cliente (opcional, manual)
+  
+  // Mapeo de colas/skills a segmentos de cliente
+  segment_mapping?: {
+    high_value_queues: string[];    // Colas para clientes alto valor
+    medium_value_queues: string[];  // Colas para clientes valor medio
+    low_value_queues: string[];     // Colas para clientes bajo valor
+  };
 }
 
 // Interacción raw del CSV (datos dinámicos)
@@ -137,6 +143,7 @@ export interface DimensionAnalysis {
 
 export interface HeatmapDataPoint {
   skill: string;
+  segment?: CustomerSegment;  // Segmento de cliente (high/medium/low)
   volume: number;  // Volumen mensual de interacciones
   aht_seconds: number;  // AHT en segundos (para cálculo de coste)
   metrics: {

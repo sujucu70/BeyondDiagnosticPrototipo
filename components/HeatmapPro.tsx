@@ -321,7 +321,21 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
                   )}
                 >
                   <td className="p-4 font-semibold text-slate-800 border-r border-slate-200">
-                    {item.skill}
+                    <div className="flex items-center gap-2">
+                      <span>{item.skill}</span>
+                      {item.segment && (
+                        <span className={clsx(
+                          "text-xs px-2 py-1 rounded-full font-semibold",
+                          item.segment === 'high' && "bg-green-100 text-green-700",
+                          item.segment === 'medium' && "bg-yellow-100 text-yellow-700",
+                          item.segment === 'low' && "bg-red-100 text-red-700"
+                        )}>
+                          {item.segment === 'high' && '🟢 High'}
+                          {item.segment === 'medium' && '🟡 Medium'}
+                          {item.segment === 'low' && '🔴 Low'}
+                        </span>
+                      )}
+                    </div>
                   </td>
                   {metrics.map(({ key }) => {
                     const value = item.metrics[key];

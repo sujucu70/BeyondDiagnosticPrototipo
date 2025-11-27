@@ -404,20 +404,71 @@ const SinglePageDataRequest: React.FC = () => {
                 <p className="text-xs text-slate-500 mt-1">Puntuación promedio de satisfacción del cliente (0-100)</p>
               </div>
 
-              {/* Customer Segment (Optional) */}
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
-                  Segmentación de Cliente (Opcional)
-                </label>
-                <select
-                  defaultValue="medium"
-                  className="w-full py-3 px-4 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-[#6D84E3] focus:border-[#6D84E3] transition"
-                >
-                  <option value="high">Alto Valor (High)</option>
-                  <option value="medium">Valor Medio (Medium)</option>
-                  <option value="low">Bajo Valor (Low)</option>
-                </select>
-                <p className="text-xs text-slate-500 mt-1">Segmento de cliente predominante en tu operación</p>
+              {/* Segmentación por Cola/Skill (Optional) */}
+              <div className="col-span-2">
+                <div className="mb-4">
+                  <h4 className="font-semibold text-slate-900 mb-2 flex items-center gap-2">
+                    <Database size={18} className="text-[#6D84E3]" />
+                    Segmentación de Clientes por Cola/Skill (Opcional)
+                  </h4>
+                  <p className="text-sm text-slate-600">
+                    Identifica qué colas/skills corresponden a cada segmento de cliente. Separa múltiples colas con comas.
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  {/* High Value */}
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      🟢 Clientes Alto Valor (High)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Ej: VIP, Premium, Enterprise, Key_Accounts"
+                      className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-[#6D84E3] focus:border-[#6D84E3] transition"
+                    />
+                    <p className="text-xs text-slate-500 mt-1">
+                      Colas para clientes de alto valor o estratégicos
+                    </p>
+                  </div>
+
+                  {/* Medium Value */}
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      🟡 Clientes Valor Medio (Medium)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Ej: Soporte_General, Ventas, Facturacion"
+                      className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-[#6D84E3] focus:border-[#6D84E3] transition"
+                    />
+                    <p className="text-xs text-slate-500 mt-1">
+                      Colas para clientes estándar o generales
+                    </p>
+                  </div>
+
+                  {/* Low Value */}
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      🔴 Clientes Bajo Valor (Low)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Ej: Basico, Trial, Freemium"
+                      className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-[#6D84E3] focus:border-[#6D84E3] transition"
+                    />
+                    <p className="text-xs text-slate-500 mt-1">
+                      Colas para clientes de bajo valor o en prueba
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm text-blue-800">
+                    ℹ️ <strong>Nota:</strong> Las colas no mapeadas se clasificarán automáticamente como "Medium". 
+                    El matching es flexible (no distingue mayúsculas y permite coincidencias parciales).
+                  </p>
+                </div>
               </div>
             </div>
           </motion.div>
