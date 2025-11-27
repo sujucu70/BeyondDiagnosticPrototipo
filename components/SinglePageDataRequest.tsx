@@ -326,16 +326,112 @@ const SinglePageDataRequest: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Data Upload Section */}
+          {/* Static Configuration Section */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
             className="bg-white rounded-xl shadow-lg p-8"
           >
+            <div className="mb-6">
+              <h2 className="text-3xl font-bold text-slate-900 mb-2 flex items-center gap-2">
+                <Database size={28} className="text-[#6D84E3]" />
+                Configuración Estática
+              </h2>
+              <p className="text-slate-600">
+                Introduce los parámetros de configuración para tu análisis
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Cost per Hour */}
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  Coste por Hora Agente (Fully Loaded)
+                </label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-semibold">€</span>
+                  <input
+                    type="number"
+                    defaultValue="20"
+                    min="0"
+                    step="0.5"
+                    className="w-full pl-10 pr-20 py-3 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-[#6D84E3] focus:border-[#6D84E3] transition"
+                    placeholder="20"
+                  />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-500 font-medium">€/hora</span>
+                </div>
+                <p className="text-xs text-slate-500 mt-1">Incluye salario, cargas sociales, infraestructura, etc.</p>
+              </div>
+
+              {/* Savings Target */}
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  Objetivo de Ahorro
+                </label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    defaultValue="30"
+                    min="0"
+                    max="100"
+                    step="5"
+                    className="w-full pr-12 py-3 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-[#6D84E3] focus:border-[#6D84E3] transition"
+                    placeholder="30"
+                  />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 font-semibold">%</span>
+                </div>
+                <p className="text-xs text-slate-500 mt-1">Porcentaje de ahorro esperado en procesos automatizables</p>
+              </div>
+
+              {/* Average CSAT (Optional) */}
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  CSAT Promedio (Opcional)
+                </label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    defaultValue="85"
+                    min="0"
+                    max="100"
+                    step="1"
+                    className="w-full pr-16 py-3 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-[#6D84E3] focus:border-[#6D84E3] transition"
+                    placeholder="85"
+                  />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-500 font-medium">/ 100</span>
+                </div>
+                <p className="text-xs text-slate-500 mt-1">Puntuación promedio de satisfacción del cliente (0-100)</p>
+              </div>
+
+              {/* Customer Segment (Optional) */}
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  Segmentación de Cliente (Opcional)
+                </label>
+                <select
+                  defaultValue="medium"
+                  className="w-full py-3 px-4 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-[#6D84E3] focus:border-[#6D84E3] transition"
+                >
+                  <option value="high">Alto Valor (High)</option>
+                  <option value="medium">Valor Medio (Medium)</option>
+                  <option value="low">Bajo Valor (Low)</option>
+                </select>
+                <p className="text-xs text-slate-500 mt-1">Segmento de cliente predominante en tu operación</p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Data Upload Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="bg-white rounded-xl shadow-lg p-8"
+          >
             <div className="mb-8">
               <h2 className="text-3xl font-bold text-slate-900 mb-2">
-                Sube tus Datos
+                Sube tus Datos (CSV)
               </h2>
               <p className="text-slate-600">
                 Elige una de las siguientes opciones para proporcionar tus datos

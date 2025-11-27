@@ -152,31 +152,39 @@ const identifyPeakHours = (hourly_distribution: number[]): number[] => {
         .filter(idx => idx !== -1);
 };
 
-const generateHeatmapData = (): HeatmapDataPoint[] => {
+// v2.0: Generar heatmap con nueva estructura (calculado desde raw data)
+const generateHeatmapData = (costPerHour: number = 20, avgCsat: number = 85): HeatmapDataPoint[] => {
     const skills = ['Ventas Inbound', 'Soporte Técnico N1', 'Facturación', 'Retención'];
-    const COST_PER_HOUR = 25; // €25/hora (estándar industria)
-    const COST_PER_SECOND = COST_PER_HOUR / 3600;
+    const COST_PER_SECOND = costPerHour / 3600;
     
     return skills.map(skill => {
         const volume = randomInt(800, 2500); // Volumen mensual
-        const aht_seconds = randomInt(280, 550); // AHT en segundos
-        const annual_volume = volume * 12; // Volumen anual
+        
+        // Simular raw data: duration_talk, hold_time, wrap_up_time
+        const avg_talk_time = randomInt(240, 450); // segundos
+        const avg_hold_time = randomInt(15, 80); // segundos
+        const avg_wrap_up = randomInt(10, 50); // segundos
+        const aht_seconds = avg_talk_time + avg_hold_time + avg_wrap_up; // AHT calculado
+        
+        // Transfer rate (para FCR aproximado)
+        const transfer_rate = randomInt(5, 35); // %
+        const fcr_approx = 100 - transfer_rate; // FCR aproximado
+        
+        // Coste anual
+        const annual_volume = volume * 12;
         const annual_cost = Math.round(annual_volume * aht_seconds * COST_PER_SECOND);
         
-        // v2.0: Generar métricas de variabilidad
+        // v2.0: Métricas de variabilidad (simplificadas sin CSAT ni entropía input)
         const cv_aht = randomInt(15, 55); // CV AHT (15-55%)
-        const cv_fcr = randomInt(12, 50); // CV FCR (12-50%)
-        const cv_csat = randomInt(18, 60); // CV CSAT (18-60%)
-        const entropy_input = randomInt(10, 65); // Entropía (10-65)
-        const escalation_rate = randomInt(5, 45); // Escalación (5-45%)
+        const cv_talk_time = randomInt(20, 60); // CV Talk Time (proxy de variabilidad input)
+        const cv_hold_time = randomInt(25, 70); // CV Hold Time
         
-        // Calcular Automation Readiness Score
+        // Calcular Automation Readiness Score (4 factores)
         const automation_readiness = Math.round(
-            (100 - cv_aht) * 0.30 +
-            (100 - cv_fcr) * 0.25 +
-            (100 - cv_csat) * 0.20 +
-            (100 - entropy_input) * 0.15 +
-            (100 - escalation_rate) * 0.10
+            (100 - cv_aht) * 0.35 +
+            (100 - cv_talk_time) * 0.30 +
+            (100 - cv_hold_time) * 0.20 +
+            (100 - transfer_rate) * 0.15
         );
         
         return {
@@ -184,18 +192,18 @@ const generateHeatmapData = (): HeatmapDataPoint[] => {
             volume,
             aht_seconds,
             metrics: {
-                fcr: randomInt(65, 95),
-                aht: randomInt(70, 98), 
-                csat: randomInt(75, 99),
-                quality: randomInt(80, 97)
+                fcr: fcr_approx,
+                aht: Math.round(100 - ((aht_seconds - 240) / 310) * 100), // Score normalizado
+                csat: avgCsat, // CSAT manual (estático)
+                hold_time: avg_hold_time,
+                transfer_rate
             },
             annual_cost,
             variability: {
                 cv_aht,
-                cv_fcr,
-                cv_csat,
-                entropy_input,
-                escalation_rate
+                cv_talk_time,
+                cv_hold_time,
+                transfer_rate
             },
             automation_readiness
         };
@@ -419,7 +427,7 @@ export const generateAnalysis = (tier: TierKey): AnalysisData => {
     dimensions,
     keyFindings: [...new Set(Array.from({ length: 3 }, () => randomFromList(KEY_FINDINGS)))],
     recommendations: [...new Set(Array.from({ length: 3 }, () => randomFromList(RECOMMENDATIONS)))],
-    heatmap: generateHeatmapData(),
+    heatmap: generateHeatmapData(20, 85), // cost_per_hour=20, avg_csat=85
     opportunityMatrix: generateOpportunityMatrixData(),
     roadmap: generateRoadmapData(),
     economicModel: generateEconomicModelData(),

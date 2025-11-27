@@ -1,4 +1,4 @@
-// constants.ts - v2.0 con 6 dimensiones
+// constants.ts - v2.0 con especificación simplificada
 import { TiersData, DataRequirementsData } from './types';
 
 export const TIERS: TiersData = {
@@ -53,127 +53,90 @@ export const TIERS: TiersData = {
   }
 };
 
+// v2.0: Requisitos de datos simplificados (raw data de ACD/CTI)
 export const DATA_REQUIREMENTS: DataRequirementsData = {
   gold: {
     mandatory: [
       {
-        category: '📊 Datos de Interacciones (CORE)',
+        category: '⚙️ Configuración Estática (Manual)',
         fields: [
-          { name: 'interaction_id', type: 'String único', example: 'INT-2024-001234', critical: true },
-          { name: 'timestamp_start', type: 'DateTime', example: '2024-10-15 09:23:45', critical: true },
-          { name: 'timestamp_end', type: 'DateTime', example: '2024-10-15 09:29:12', critical: true },
-          { name: 'channel', type: 'String', example: 'voice, chat, email, whatsapp', critical: true },
-          { name: 'skill / queue', type: 'String', example: 'soporte_tecnico, facturacion, renovaciones', critical: true },
-          { name: 'agent_id', type: 'String', example: 'AGT-0234', critical: true },
-          { name: 'hour_of_day', type: 'Integer (0-23)', example: '14', critical: false },
-          { name: 'is_off_hours', type: 'Boolean', example: 'TRUE / FALSE', critical: false }
+          { name: 'cost_per_hour', type: 'Número', example: '20', critical: true },
+          { name: 'savings_target', type: 'Porcentaje', example: '30', critical: true },
+          { name: 'avg_csat', type: 'Número (0-100)', example: '85', critical: false },
+          { name: 'customer_segment', type: 'high | medium | low', example: 'high', critical: false }
         ]
       },
       {
-        category: '⏱️ Métricas de Tiempo (RENDIMIENTO)',
+        category: '📊 Datos del CSV (Raw Data de ACD)',
         fields: [
-          { name: 'aht', type: 'Integer (segundos)', example: '380', critical: true },
-          { name: 'tmo', type: 'Integer (segundos)', example: '360', critical: false },
-          { name: 'talk_time', type: 'Integer (segundos)', example: '320', critical: true },
-          { name: 'hold_time', type: 'Integer (segundos)', example: '45', critical: true },
-          { name: 'acw', type: 'Integer (segundos)', example: '15', critical: true },
-          { name: 'speed_of_answer', type: 'Integer (segundos)', example: '12', critical: false }
-        ]
-      },
-      {
-        category: '✅ Métricas de Resolución (EFICIENCIA)',
-        fields: [
-          { name: 'resolved', type: 'Boolean', example: 'TRUE / FALSE', critical: true },
-          { name: 'fcr', type: 'Boolean', example: 'TRUE / FALSE', critical: true },
-          { name: 'transferred', type: 'Boolean', example: 'TRUE / FALSE', critical: true },
-          { name: 'escalated', type: 'Boolean', example: 'TRUE / FALSE', critical: true },
-          { name: 'abandoned', type: 'Boolean', example: 'TRUE / FALSE', critical: true },
-          { name: 'transfer_to_skill', type: 'String', example: 'supervisor, tier2', critical: false }
-        ]
-      },
-      {
-        category: '👤 Datos de Cliente (SEGMENTACIÓN)',
-        fields: [
-          { name: 'customer_id', type: 'String único', example: 'CUST-56789', critical: true },
-          { name: 'customer_segment', type: 'String', example: 'high | medium | low', critical: false },
-          { name: 'contact_reason', type: 'String', example: 'consulta_saldo, reclamacion', critical: false },
-          { name: 'contact_reason_category', type: 'String', example: 'billing, technical, sales', critical: false }
-        ]
-      },
-      {
-        category: '😊 Satisfacción (CSAT)',
-        fields: [
-          { name: 'csat_score', type: 'Integer', example: '1-5 o 1-10', critical: false },
-          { name: 'nps_score', type: 'Integer', example: '-100 a +100', critical: false },
-          { name: 'ces_score', type: 'Integer', example: '1-7', critical: false }
+          { name: 'interaction_id', type: 'String único', example: 'call_8842910', critical: true },
+          { name: 'datetime_start', type: 'DateTime', example: '2024-10-01 09:15:22', critical: true },
+          { name: 'queue_skill', type: 'String', example: 'Soporte_Nivel1, Ventas', critical: true },
+          { name: 'channel', type: 'String', example: 'Voice, Chat, WhatsApp', critical: true },
+          { name: 'duration_talk', type: 'Segundos', example: '345', critical: true },
+          { name: 'hold_time', type: 'Segundos', example: '45', critical: true },
+          { name: 'wrap_up_time', type: 'Segundos', example: '30', critical: true },
+          { name: 'agent_id', type: 'String', example: 'Agente_045', critical: true },
+          { name: 'transfer_flag', type: 'Boolean', example: 'TRUE / FALSE', critical: true },
+          { name: 'caller_id', type: 'String (hash)', example: 'Hash_99283', critical: false }
         ]
       }
     ],
-    format: 'CSV, Excel (.xlsx), JSON, o Google Sheets',
-    volumeMin: 'Mínimo 500 interacciones (ideal 2,000+)'
+    format: 'CSV o Excel (.xlsx) exportado directamente del ACD/CTI',
+    volumeMin: 'Mínimo 3 meses completos (ideal 6 meses para capturar estacionalidad)'
   },
   silver: {
     mandatory: [
       {
-        category: '📊 Datos de Interacciones (CORE)',
+        category: '⚙️ Configuración Estática (Manual)',
         fields: [
-          { name: 'interaction_id', type: 'String único', example: 'INT-2024-001234', critical: true },
-          { name: 'timestamp_start', type: 'DateTime', example: '2024-10-15 09:23:45', critical: true },
-          { name: 'timestamp_end', type: 'DateTime', example: '2024-10-15 09:29:12', critical: true },
-          { name: 'channel', type: 'String', example: 'voice, chat, email', critical: true },
-          { name: 'skill / queue', type: 'String', example: 'soporte_tecnico, facturacion', critical: true }
+          { name: 'cost_per_hour', type: 'Número', example: '20', critical: true },
+          { name: 'savings_target', type: 'Porcentaje', example: '30', critical: true },
+          { name: 'avg_csat', type: 'Número (0-100)', example: '85', critical: false }
         ]
       },
       {
-        category: '⏱️ Métricas de Tiempo (RENDIMIENTO)',
+        category: '📊 Datos del CSV (Raw Data de ACD)',
         fields: [
-          { name: 'aht', type: 'Integer (segundos)', example: '380', critical: true },
-          { name: 'talk_time', type: 'Integer (segundos)', example: '320', critical: true }
-        ]
-      },
-      {
-        category: '✅ Métricas de Resolución (EFICIENCIA)',
-        fields: [
-          { name: 'resolved', type: 'Boolean', example: 'TRUE / FALSE', critical: true },
-          { name: 'transferred', type: 'Boolean', example: 'TRUE / FALSE', critical: true },
-          { name: 'escalated', type: 'Boolean', example: 'TRUE / FALSE', critical: false }
-        ]
-      },
-      {
-        category: '👤 Datos de Cliente',
-        fields: [
-          { name: 'customer_id', type: 'String único', example: 'CUST-56789', critical: false }
+          { name: 'interaction_id', type: 'String único', example: 'call_8842910', critical: true },
+          { name: 'datetime_start', type: 'DateTime', example: '2024-10-01 09:15:22', critical: true },
+          { name: 'queue_skill', type: 'String', example: 'Soporte_Nivel1', critical: true },
+          { name: 'channel', type: 'String', example: 'Voice, Chat', critical: true },
+          { name: 'duration_talk', type: 'Segundos', example: '345', critical: true },
+          { name: 'hold_time', type: 'Segundos', example: '45', critical: true },
+          { name: 'wrap_up_time', type: 'Segundos', example: '30', critical: true },
+          { name: 'agent_id', type: 'String', example: 'Agente_045', critical: true },
+          { name: 'transfer_flag', type: 'Boolean', example: 'TRUE / FALSE', critical: true }
         ]
       }
     ],
-    format: 'CSV, Excel (.xlsx), JSON',
-    volumeMin: 'Mínimo 300 interacciones'
+    format: 'CSV o Excel (.xlsx)',
+    volumeMin: 'Mínimo 2 meses completos'
   },
   bronze: {
     mandatory: [
       {
-        category: '📊 Datos de Interacciones (CORE)',
+        category: '⚙️ Configuración Estática (Manual)',
         fields: [
-          { name: 'timestamp', type: 'DateTime', example: '2024-10-15 09:23:45', critical: true },
-          { name: 'channel', type: 'String', example: 'voice, chat, email', critical: true },
-          { name: 'skill / queue', type: 'String', example: 'soporte_tecnico', critical: true }
+          { name: 'cost_per_hour', type: 'Número', example: '20', critical: true },
+          { name: 'savings_target', type: 'Porcentaje', example: '30', critical: true }
         ]
       },
       {
-        category: '⏱️ Métricas de Tiempo',
+        category: '📊 Datos del CSV (Raw Data de ACD)',
         fields: [
-          { name: 'aht', type: 'Integer (segundos)', example: '380', critical: true }
-        ]
-      },
-      {
-        category: '✅ Métricas de Resolución',
-        fields: [
-          { name: 'resolved', type: 'Boolean', example: 'TRUE / FALSE', critical: true }
+          { name: 'interaction_id', type: 'String único', example: 'call_8842910', critical: true },
+          { name: 'datetime_start', type: 'DateTime', example: '2024-10-01 09:15:22', critical: true },
+          { name: 'queue_skill', type: 'String', example: 'Soporte', critical: true },
+          { name: 'duration_talk', type: 'Segundos', example: '345', critical: true },
+          { name: 'hold_time', type: 'Segundos', example: '45', critical: true },
+          { name: 'wrap_up_time', type: 'Segundos', example: '30', critical: true },
+          { name: 'transfer_flag', type: 'Boolean', example: 'TRUE / FALSE', critical: true }
         ]
       }
     ],
-    format: 'CSV, Excel (.xlsx)',
-    volumeMin: 'Mínimo 100 interacciones'
+    format: 'CSV o Excel (.xlsx)',
+    volumeMin: 'Mínimo 1 mes completo'
   }
 };
 
@@ -220,4 +183,45 @@ export const SEGMENT_MULTIPLIERS = {
   high: 1.5,
   medium: 1.0,
   low: 0.7
+};
+
+// v2.0: Configuración estática por defecto
+export const DEFAULT_STATIC_CONFIG = {
+  cost_per_hour: 20,        // €20/hora (fully loaded)
+  savings_target: 30,       // 30% de ahorro
+  avg_csat: 85,             // 85/100 CSAT promedio
+  customer_segment: 'medium' as const
+};
+
+// v2.0: Validación de período mínimo (en días)
+export const MIN_DATA_PERIOD_DAYS = {
+  gold: 90,    // 3 meses
+  silver: 60,  // 2 meses
+  bronze: 30   // 1 mes
+};
+
+// v2.0: Scores de estructuración por canal (proxy sin reason codes)
+export const CHANNEL_STRUCTURING_SCORES = {
+  'Voice': 30,      // Bajo (no estructurado)
+  'Chat': 60,       // Medio (semi-estructurado)
+  'WhatsApp': 50,   // Medio-bajo
+  'Email': 70,      // Medio-alto
+  'API': 90,        // Alto (estructurado)
+  'SMS': 40,        // Bajo-medio
+  'default': 50     // Valor por defecto
+};
+
+// v2.0: Horario "fuera de horas" (off-hours)
+export const OFF_HOURS_RANGE = {
+  start: 19,  // 19:00
+  end: 8      // 08:00
+};
+
+// v2.0: Percentiles de benchmark para heatmap
+export const BENCHMARK_PERCENTILES = {
+  fcr: { p25: 65, p50: 75, p75: 85, p90: 92 },
+  aht: { p25: 420, p50: 360, p75: 300, p90: 240 },  // segundos
+  hold_time: { p25: 60, p50: 45, p75: 30, p90: 15 },  // segundos
+  transfer_rate: { p25: 25, p50: 15, p75: 8, p90: 3 },  // %
+  csat: { p25: 75, p50: 82, p75: 88, p90: 93 }
 };

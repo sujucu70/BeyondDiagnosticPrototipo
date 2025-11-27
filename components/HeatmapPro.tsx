@@ -9,7 +9,7 @@ interface HeatmapProProps {
   data: HeatmapDataPoint[];
 }
 
-type SortKey = 'skill' | 'fcr' | 'aht' | 'csat' | 'quality' | 'average' | 'cost';
+type SortKey = 'skill' | 'fcr' | 'aht' | 'csat' | 'hold_time' | 'transfer_rate' | 'average' | 'cost';
 type SortOrder = 'asc' | 'desc';
 
 interface TooltipData {
@@ -61,7 +61,8 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
     { key: 'fcr', label: 'FCR' },
     { key: 'aht', label: 'AHT' },
     { key: 'csat', label: 'CSAT' },
-    { key: 'quality', label: 'Quality' },
+    { key: 'hold_time', label: 'Hold Time' },
+    { key: 'transfer_rate', label: 'Transfer %' },
   ];
 
   // Calculate insights

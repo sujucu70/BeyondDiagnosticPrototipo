@@ -9,7 +9,7 @@ interface VariabilityHeatmapProps {
   data: HeatmapDataPoint[];
 }
 
-type SortKey = 'skill' | 'cv_aht' | 'cv_fcr' | 'cv_csat' | 'entropy_input' | 'escalation_rate' | 'automation_readiness';
+type SortKey = 'skill' | 'cv_aht' | 'cv_talk_time' | 'cv_hold_time' | 'transfer_rate' | 'automation_readiness';
 type SortOrder = 'asc' | 'desc';
 
 interface TooltipData {
@@ -62,10 +62,9 @@ const VariabilityHeatmap: React.FC<VariabilityHeatmapProps> = ({ data }) => {
 
   const metrics: Array<{ key: keyof HeatmapDataPoint['variability']; label: string }> = [
     { key: 'cv_aht', label: 'CV AHT' },
-    { key: 'cv_fcr', label: 'CV FCR' },
-    { key: 'cv_csat', label: 'CV CSAT' },
-    { key: 'entropy_input', label: 'Entropía' },
-    { key: 'escalation_rate', label: 'Escalación' },
+    { key: 'cv_talk_time', label: 'CV Talk Time' },
+    { key: 'cv_hold_time', label: 'CV Hold Time' },
+    { key: 'transfer_rate', label: 'Transfer Rate' },
   ];
 
   // Calculate insights

@@ -33,6 +33,60 @@ export interface DataRequirement {
 export type TiersData = Record<TierKey, Tier>;
 export type DataRequirementsData = Record<TierKey, DataRequirement>;
 
+// --- v2.0: Nueva estructura de datos de entrada ---
+
+// Configuración estática (manual)
+export interface StaticConfig {
+  cost_per_hour: number;      // Coste por hora agente (€/hora, fully loaded)
+  savings_target: number;     // Objetivo de ahorro (%, ej: 30 para 30%)
+  avg_csat?: number;          // CSAT promedio (0-100, opcional, manual)
+  customer_segment?: CustomerSegment;  // Segmentación de cliente (opcional, manual)
+}
+
+// Interacción raw del CSV (datos dinámicos)
+export interface RawInteraction {
+  interaction_id: string;     // ID único de la llamada/sesión
+  datetime_start: string;     // Timestamp inicio (ISO 8601 o auto-detectado)
+  queue_skill: string;        // Cola o skill
+  channel: 'Voice' | 'Chat' | 'WhatsApp' | 'Email' | string;  // Tipo de medio
+  duration_talk: number;      // Tiempo de conversación activa (segundos)
+  hold_time: number;          // Tiempo en espera (segundos)
+  wrap_up_time: number;       // Tiempo ACW post-llamada (segundos)
+  agent_id: string;           // ID agente (anónimo/hash)
+  transfer_flag: boolean;     // Indicador de transferencia
+  caller_id?: string;         // ID cliente (opcional, hash/anónimo)
+}
+
+// Métricas calculadas por skill
+export interface SkillMetrics {
+  skill: string;
+  volume: number;             // Total de interacciones
+  channel: string;            // Canal predominante
+  
+  // Métricas de rendimiento (calculadas)
+  fcr: number;                // FCR aproximado: 100% - transfer_rate
+  aht: number;                // AHT = duration_talk + hold_time + wrap_up_time
+  avg_talk_time: number;      // Promedio duration_talk
+  avg_hold_time: number;      // Promedio hold_time
+  avg_wrap_up: number;        // Promedio wrap_up_time
+  transfer_rate: number;      // % con transfer_flag = true
+  
+  // Métricas de variabilidad
+  cv_aht: number;             // Coeficiente de variación AHT (%)
+  cv_talk_time: number;       // CV de duration_talk (proxy de variabilidad input)
+  cv_hold_time: number;       // CV de hold_time
+  
+  // Distribución temporal
+  hourly_distribution: number[];  // 24 valores (0-23h)
+  off_hours_pct: number;      // % llamadas fuera de horario (19:00-08:00)
+  
+  // Coste
+  annual_cost: number;        // Volumen × AHT × cost_per_hour × 12
+  
+  // Outliers y complejidad
+  outlier_rate: number;       // % casos con AHT > P90
+}
+
 // --- Analysis Dashboard Types ---
 
 export interface Kpi {
@@ -86,26 +140,26 @@ export interface HeatmapDataPoint {
   volume: number;  // Volumen mensual de interacciones
   aht_seconds: number;  // AHT en segundos (para cálculo de coste)
   metrics: {
-    fcr: number;    // First Contact Resolution score (0-100)
-    aht: number;    // Average Handle Time score (0-100, donde 100 es óptimo)
-    csat: number;   // Customer Satisfaction score (0-100)
-    quality: number; // Quality Assurance score (0-100)
+    fcr: number;    // First Contact Resolution score (0-100) - CALCULADO
+    aht: number;    // Average Handle Time score (0-100, donde 100 es óptimo) - CALCULADO
+    csat: number;   // Customer Satisfaction score (0-100) - MANUAL (estático)
+    hold_time: number;  // Hold Time promedio (segundos) - CALCULADO
+    transfer_rate: number;  // % transferencias - CALCULADO
   };
-  annual_cost?: number;  // Coste anual en euros (opcional)
+  annual_cost?: number;  // Coste anual en euros (calculado con cost_per_hour)
   
   // v2.0: Métricas de variabilidad interna
   variability: {
     cv_aht: number;         // Coeficiente de variación AHT (%)
-    cv_fcr: number;         // Variabilidad FCR (%)
-    cv_csat: number;        // Variabilidad CSAT (%)
-    entropy_input: number;  // Entropía de motivos de contacto (0-100)
-    escalation_rate: number; // % de casos escalados
+    cv_talk_time: number;   // CV Talk Time (proxy de variabilidad input)
+    cv_hold_time: number;   // CV Hold Time (%)
+    transfer_rate: number;  // % de casos transferidos (repetido para consistencia)
   };
   
   automation_readiness: number;  // Score de automatizabilidad (0-100)
 }
 
-// v2.0: Añadir segmentación de cliente
+// v2.0: Segmentación de cliente
 export type CustomerSegment = 'high' | 'medium' | 'low';
 
 export interface Opportunity {
@@ -193,4 +247,5 @@ export interface AnalysisData {
   economicModel: EconomicModelData;
   benchmarkReport: BenchmarkDataPoint[];
   agenticReadiness?: AgenticReadinessResult;  // v2.0: Nuevo campo
+  staticConfig?: StaticConfig;  // v2.0: Configuración estática usada
 }
