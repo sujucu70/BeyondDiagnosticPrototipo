@@ -12,15 +12,7 @@ import clsx from 'clsx';
 import toast from 'react-hot-toast';
 
 interface DataInputRedesignedProps {
-  onAnalyze: (config: {
-    costPerHour: number;
-    avgCsat: number;
-    segmentMapping?: {
-      high_value_queues: string[];
-      medium_value_queues: string[];
-      low_value_queues: string[];
-    };
-  }) => void;
+  onAnalyze: () => void;
   isAnalyzing: boolean;
 }
 
@@ -535,20 +527,7 @@ const DataInputRedesigned: React.FC<DataInputRedesignedProps> = ({
         className="flex justify-center"
       >
         <button
-          onClick={() => {
-            // Preparar segment_mapping si hay colas definidas
-            const segmentMapping = (highValueQueues || mediumValueQueues || lowValueQueues) ? {
-              high_value_queues: highValueQueues.split(',').map(q => q.trim()).filter(q => q),
-              medium_value_queues: mediumValueQueues.split(',').map(q => q.trim()).filter(q => q),
-              low_value_queues: lowValueQueues.split(',').map(q => q.trim()).filter(q => q)
-            } : undefined;
-            
-            onAnalyze({
-              costPerHour,
-              avgCsat,
-              segmentMapping
-            });
-          }}
+          onClick={onAnalyze}
           disabled={!canAnalyze || isAnalyzing}
           className={clsx(
             'px-8 py-4 rounded-xl font-bold text-lg transition-all flex items-center gap-3',
