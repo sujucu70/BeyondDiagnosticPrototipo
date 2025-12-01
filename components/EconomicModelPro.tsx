@@ -14,15 +14,24 @@ const EconomicModelPro: React.FC<EconomicModelProProps> = ({ data }) => {
   const { initialInvestment, annualSavings, paybackMonths, roi3yr, savingsBreakdown } = data;
 
   // Calculate detailed cost breakdown
-  const costBreakdown = useMemo(() => [
-    { category: 'Software & Licencias', amount: initialInvestment * 0.43, percentage: 43 },
-    { category: 'Implementación & Consultoría', amount: initialInvestment * 0.29, percentage: 29 },
-    { category: 'Training & Change Mgmt', amount: initialInvestment * 0.18, percentage: 18 },
-    { category: 'Contingencia (10%)', amount: initialInvestment * 0.10, percentage: 10 },
-  ], [initialInvestment]);
+  const costBreakdown = useMemo(() => {
+    try {
+      const safeInitialInvestment = initialInvestment || 0;
+      return [
+    { category: 'Software & Licencias', amount: safeInitialInvestment * 0.43, percentage: 43 },
+    { category: 'Implementación & Consultoría', amount: safeInitialInvestment * 0.29, percentage: 29 },
+    { category: 'Training & Change Mgmt', amount: safeInitialInvestment * 0.18, percentage: 18 },
+    { category: 'Contingencia (10%)', amount: safeInitialInvestment * 0.10, percentage: 10 },
+      ];
+    } catch (error) {
+      console.error('❌ Error in costBreakdown useMemo:', error);
+      return [];
+    }
+  }, [initialInvestment]);
 
   // Waterfall data (quarterly cash flow)
   const waterfallData = useMemo(() => {
+    try {
     const quarters = 8; // 2 years
     const quarterlyData = [];
     let cumulative = -initialInvestment;
@@ -52,7 +61,11 @@ const EconomicModelPro: React.FC<EconomicModelProProps> = ({ data }) => {
       });
     }
 
-    return quarterlyData;
+      return quarterlyData;
+    } catch (error) {
+      console.error('❌ Error in waterfallData useMemo:', error);
+      return [];
+    }
   }, [initialInvestment, annualSavings]);
 
   // Sensitivity analysis
