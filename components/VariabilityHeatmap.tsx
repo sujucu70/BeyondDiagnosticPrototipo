@@ -103,15 +103,21 @@ const VariabilityHeatmap: React.FC<VariabilityHeatmapProps> = ({ data }) => {
 
   // Calculate dynamic title
   const dynamicTitle = useMemo(() => {
-    const highVariability = data.filter(item => item.automation_readiness < 60).length;
-    const total = data.length;
-    
-    if (highVariability === 0) {
-      return `Todas las skills muestran baja variabilidad (>60), listas para automatización`;
-    } else if (highVariability === total) {
-      return `${highVariability} de ${total} skills muestran alta variabilidad (CV>40%), sugiriendo necesidad de estandarización antes de automatizar`;
-    } else {
-      return `${highVariability} de ${total} skills muestran alta variabilidad (CV>40%), sugiriendo necesidad de estandarización antes de automatizar`;
+    try {
+      if (!data || !Array.isArray(data)) return 'Análisis de variabilidad interna';
+      const highVariability = data.filter(item => (item?.automation_readiness || 0) < 60).length;
+      const total = data.length;
+      
+      if (highVariability === 0) {
+        return `Todas las skills muestran baja variabilidad (>60), listas para automatización`;
+      } else if (highVariability === total) {
+        return `${highVariability} de ${total} skills muestran alta variabilidad (CV>40%), sugiriendo necesidad de estandarización antes de automatizar`;
+      } else {
+        return `${highVariability} de ${total} skills muestran alta variabilidad (CV>40%), sugiriendo necesidad de estandarización antes de automatizar`;
+      }
+    } catch (error) {
+      console.error('❌ Error in dynamicTitle useMemo (VariabilityHeatmap):', error);
+      return 'Análisis de variabilidad interna';
     }
   }, [data]);
 
