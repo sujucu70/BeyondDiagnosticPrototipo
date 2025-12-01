@@ -536,18 +536,28 @@ const generateSyntheticAnalysis = (
       agenticReadiness = calculateAgenticReadinessScore(agenticInput);
   }
 
+  const heatmapData = generateHeatmapData(costPerHour, avgCsat, segmentMapping);
+  
   return {
-    tier,
     overallHealthScore,
     summaryKpis,
     dimensions,
-    keyFindings: [...new Set(Array.from({ length: 3 }, () => randomFromList(KEY_FINDINGS)))],
-    recommendations: [...new Set(Array.from({ length: 3 }, () => randomFromList(RECOMMENDATIONS)))],
-    heatmap: generateHeatmapData(costPerHour, avgCsat, segmentMapping),
-    opportunityMatrix: generateOpportunityMatrixData(),
+    heatmapData,
+    agenticReadiness,
+    findings: [...new Set(Array.from({ length: 3 }, () => randomFromList(KEY_FINDINGS)))].map((text, i) => ({
+      type: i === 0 ? 'warning' as const : 'info' as const,
+      title: text.split(':')[0] || 'Hallazgo',
+      description: text
+    })),
+    recommendations: [...new Set(Array.from({ length: 3 }, () => randomFromList(RECOMMENDATIONS)))].map((text, i) => ({
+      priority: i === 0 ? 'high' as const : 'medium' as const,
+      title: text.split(':')[0] || 'Recomendación',
+      description: text,
+      impact: 'Mejora estimada del 20-30%'
+    })),
+    opportunities: generateOpportunityMatrixData(),
     roadmap: generateRoadmapData(),
     economicModel: generateEconomicModelData(),
-    benchmarkReport: generateBenchmarkData(),
-    agenticReadiness
+    benchmarkData: generateBenchmarkData()
   };
 };
