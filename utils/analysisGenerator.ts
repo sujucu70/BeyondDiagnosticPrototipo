@@ -249,8 +249,8 @@ const generateHeatmapData = (
                 fcr: fcr_approx,
                 aht: Math.round(100 - ((aht_mean - 240) / 310) * 100), // Score normalizado
                 csat: avgCsat, // CSAT manual (estático)
-                hold_time: avg_hold_time,
-                transfer_rate
+                hold_time: Math.max(0, Math.min(100, Math.round(100 - (avg_hold_time / 120) * 100))), // Normalizado: 0s=100, 120s=0
+                transfer_rate: Math.max(0, Math.min(100, Math.round(100 - (transfer_rate * 100)))) // Normalizado: 0%=100, 100%=0
             },
             annual_cost,
             variability: {
