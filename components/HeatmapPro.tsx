@@ -407,7 +407,7 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
                     </div>
                   </td>
                   {metrics.map(({ key }) => {
-                    const value = item.metrics[key];
+                    const value = item?.metrics?.[key] ?? 0;
                     return (
                       <td
                         key={key}
