@@ -84,12 +84,16 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
     const allMetrics: Array<{ skill: string; metric: string; value: number }> = [];
     
     data.forEach(item => {
+      if (!item.metrics) return; // Skip items without metrics
       metrics.forEach(({ key, label }) => {
-        allMetrics.push({
-          skill: item.skill,
-          metric: label,
-          value: item.metrics[key],
-        });
+        const value = item.metrics[key];
+        if (typeof value === 'number' && !isNaN(value)) {
+          allMetrics.push({
+            skill: item.skill,
+            metric: label,
+            value: value,
+          });
+        }
       });
     });
 
