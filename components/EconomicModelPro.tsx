@@ -56,32 +56,44 @@ const EconomicModelPro: React.FC<EconomicModelProProps> = ({ data }) => {
   }, [initialInvestment, annualSavings]);
 
   // Sensitivity analysis
-  const sensitivityData = useMemo(() => [
+  const sensitivityData = useMemo(() => {
+    try {
+      const safeAnnualSavings = annualSavings || 0;
+      const safeInitialInvestment = initialInvestment || 1;
+      const safeRoi3yr = roi3yr || 0;
+      const safePaybackMonths = paybackMonths || 0;
+      
+      return [
     {
       scenario: 'Pesimista (-20%)',
-      annualSavings: annualSavings * 0.8,
-      roi3yr: ((annualSavings * 0.8 * 3) / initialInvestment).toFixed(1),
-      payback: Math.ceil((initialInvestment / (annualSavings * 0.8)) * 12),
+      annualSavings: safeAnnualSavings * 0.8,
+      roi3yr: ((safeAnnualSavings * 0.8 * 3) / safeInitialInvestment).toFixed(1),
+      payback: Math.ceil((safeInitialInvestment / (safeAnnualSavings * 0.8)) * 12),
       color: 'text-red-600',
       bgColor: 'bg-red-50',
     },
     {
       scenario: 'Base Case',
-      annualSavings: annualSavings,
-      roi3yr: roi3yr.toFixed(1),
-      payback: paybackMonths,
+      annualSavings: safeAnnualSavings,
+      roi3yr: safeRoi3yr.toFixed(1),
+      payback: safePaybackMonths,
       color: 'text-blue-600',
       bgColor: 'bg-blue-50',
     },
     {
       scenario: 'Optimista (+20%)',
-      annualSavings: annualSavings * 1.2,
-      roi3yr: ((annualSavings * 1.2 * 3) / initialInvestment).toFixed(1),
-      payback: Math.ceil((initialInvestment / (annualSavings * 1.2)) * 12),
+      annualSavings: safeAnnualSavings * 1.2,
+      roi3yr: ((safeAnnualSavings * 1.2 * 3) / safeInitialInvestment).toFixed(1),
+      payback: Math.ceil((safeInitialInvestment / (safeAnnualSavings * 1.2)) * 12),
       color: 'text-green-600',
       bgColor: 'bg-green-50',
     },
-  ], [annualSavings, initialInvestment, roi3yr, paybackMonths]);
+      ];
+    } catch (error) {
+      console.error('❌ Error in sensitivityData useMemo:', error);
+      return [];
+    }
+  }, [annualSavings, initialInvestment, roi3yr, paybackMonths]);
 
   // Comparison with alternatives
   const alternatives = useMemo(() => [
