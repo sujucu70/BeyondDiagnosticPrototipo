@@ -261,15 +261,11 @@ function generateHeatmapFromMetrics(
   console.log('📊 Heatmap data generated from real data:', {
     length: result.length,
     firstItem: result[0],
-    metricsKeys: result[0] ? Object.keys(result[0]) : [],
-    hasMetrics: result[0] && typeof result[0].fcr !== 'undefined',
-    firstMetrics: result[0] ? {
-      fcr: result[0].fcr,
-      aht: result[0].aht,
-      csat: result[0].csat,
-      hold_time: result[0].hold_time,
-      transfer_rate: result[0].transfer_rate
-    } : null
+    objectKeys: result[0] ? Object.keys(result[0]) : [],
+    hasMetricsObject: result[0] && typeof result[0].metrics !== 'undefined',
+    metricsKeys: result[0] && result[0].metrics ? Object.keys(result[0].metrics) : [],
+    firstMetrics: result[0] && result[0].metrics ? result[0].metrics : null,
+    automation_readiness: result[0] ? result[0].automation_readiness : null
   });
   
   return result;
