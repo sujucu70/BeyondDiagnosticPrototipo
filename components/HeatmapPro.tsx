@@ -203,7 +203,7 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
     }
     console.log(`✅ sortedData: sorting ${dataWithAverages.length} items`);
     console.log('About to spread and sort dataWithAverages');
-    return [...dataWithAverages].sort((a, b) => {
+    const sorted = [...dataWithAverages].sort((a, b) => {
       try {
         if (!a || !b) {
           console.error('sort: a or b is null/undefined', { a, b });
@@ -240,6 +240,8 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
         return 0;
       }
     });
+    console.log('✅ Sort completed successfully', { sortedLength: sorted.length });
+    return sorted;
   }, [dataWithAverages, sortKey, sortOrder]);
 
   const handleCellHover = (
