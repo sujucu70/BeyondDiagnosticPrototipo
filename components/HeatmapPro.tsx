@@ -52,6 +52,20 @@ const getCellIcon = (value: number) => {
 };
 
 const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
+  console.log('🔥 HeatmapPro received data:', {
+    length: data?.length,
+    firstItem: data?.[0],
+    firstMetrics: data?.[0]?.metrics,
+    metricsKeys: data?.[0] ? Object.keys(data[0].metrics) : [],
+    metricsValues: data?.[0] ? Object.values(data[0].metrics) : [],
+    hasUndefinedMetrics: data?.some(item => 
+      Object.values(item.metrics).some(v => v === undefined)
+    ),
+    hasNaNMetrics: data?.some(item => 
+      Object.values(item.metrics).some(v => isNaN(v))
+    )
+  });
+  
   const [sortKey, setSortKey] = useState<SortKey>('skill');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);

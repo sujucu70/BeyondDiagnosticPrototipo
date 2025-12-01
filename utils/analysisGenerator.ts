@@ -535,9 +535,18 @@ const generateSyntheticAnalysis = (
       
       agenticReadiness = calculateAgenticReadinessScore(agenticInput);
   }
-
-  const heatmapData = generateHeatmapData(costPerHour, avgCsat, segmentMapping);
-  
+    
+  const heatmapData = generateHeatmapData(tier, costPerHour, avgCsat, segmentMapping);
+    
+    console.log('📊 Heatmap data generated:', {
+        length: heatmapData.length,
+        firstItem: heatmapData[0],
+        metricsKeys: heatmapData[0] ? Object.keys(heatmapData[0].metrics) : [],
+        metricsValues: heatmapData[0] ? heatmapData[0].metrics : {},
+        hasNaN: heatmapData.some(item => 
+            Object.values(item.metrics).some(v => isNaN(v))
+        )
+    });  
   return {
     tier,
     overallHealthScore,

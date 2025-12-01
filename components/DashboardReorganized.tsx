@@ -61,6 +61,16 @@ const SectionDivider: React.FC<{ icon: React.ReactNode; title: string }> = ({ ic
 );
 
 const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisData, onBack }) => {
+  console.log('📊 DashboardReorganized received data:', {
+    tier: analysisData.tier,
+    heatmapDataLength: analysisData.heatmapData?.length,
+    heatmapFirstItem: analysisData.heatmapData?.[0],
+    findingsLength: analysisData.findings?.length,
+    recommendationsLength: analysisData.recommendations?.length,
+    dimensionsLength: analysisData.dimensions?.length,
+    summaryKpisLength: analysisData.summaryKpis?.length
+  });
+  
   const tierInfo = TIERS[analysisData.tier || 'gold'];  // Default to gold if tier is undefined
 
   return (
