@@ -48,12 +48,18 @@ const OpportunityMatrixPro: React.FC<OpportunityMatrixProProps> = ({ data, heatm
 
   // Calculate priorities (Impact × Feasibility × Savings)
   const dataWithPriority = useMemo(() => {
-    return data.map(opp => {
+    try {
+      if (!data || !Array.isArray(data)) return [];
+      return data.map(opp => {
       const adjustedFeasibility = adjustFeasibilityWithReadiness(opp);
       const priorityScore = (opp.impact / 10) * (adjustedFeasibility / 10) * (opp.savings / maxSavings);
       return { ...opp, adjustedFeasibility, priorityScore };
     }).sort((a, b) => b.priorityScore - a.priorityScore)
       .map((opp, index) => ({ ...opp, priority: index + 1 }));
+    } catch (error) {
+      console.error('❌ Error in dataWithPriority useMemo:', error);
+      return [];
+    }
   }, [data, maxSavings, heatmapData]);
 
   // Calculate portfolio summary
