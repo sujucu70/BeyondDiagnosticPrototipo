@@ -29,9 +29,21 @@ const SinglePageDataRequestIntegrated: React.FC = () => {
       medium_value_queues: string[];
       low_value_queues: string[];
     };
+    file?: File;
+    sheetUrl?: string;
+    useSynthetic?: boolean;
   }) => {
     console.log('🚀 handleAnalyze called with config:', config);
     console.log('🎯 Selected tier:', selectedTier);
+    console.log('📄 File:', config.file);
+    console.log('🔗 Sheet URL:', config.sheetUrl);
+    console.log('✨ Use Synthetic:', config.useSynthetic);
+    
+    // Validar que hay datos
+    if (!config.file && !config.sheetUrl && !config.useSynthetic) {
+      toast.error('Por favor, sube un archivo, introduce una URL o genera datos sintéticos.');
+      return;
+    }
     
     setIsAnalyzing(true);
     toast.loading('Generando análisis...', { id: 'analyzing' });

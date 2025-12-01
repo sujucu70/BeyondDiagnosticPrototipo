@@ -12,7 +12,18 @@ import clsx from 'clsx';
 import toast from 'react-hot-toast';
 
 interface DataInputRedesignedProps {
-  onAnalyze: () => void;
+  onAnalyze: (config: {
+    costPerHour: number;
+    avgCsat: number;
+    segmentMapping?: {
+      high_value_queues: string[];
+      medium_value_queues: string[];
+      low_value_queues: string[];
+    };
+    file?: File;
+    sheetUrl?: string;
+    useSynthetic?: boolean;
+  }) => void;
   isAnalyzing: boolean;
 }
 
@@ -527,7 +538,24 @@ const DataInputRedesigned: React.FC<DataInputRedesignedProps> = ({
         className="flex justify-center"
       >
         <button
-          onClick={onAnalyze}
+          onClick={() => {
+            // Preparar segment_mapping
+            const segmentMapping = (highValueQueues || mediumValueQueues || lowValueQueues) ? {
+              high_value_queues: highValueQueues.split(',').map(q => q.trim()).filter(q => q),
+              medium_value_queues: mediumValueQueues.split(',').map(q => q.trim()).filter(q => q),
+              low_value_queues: lowValueQueues.split(',').map(q => q.trim()).filter(q => q)
+            } : undefined;
+            
+            // Llamar a onAnalyze con todos los datos
+            onAnalyze({
+              costPerHour,
+              avgCsat,
+              segmentMapping,
+              file: uploadMethod === 'file' ? file || undefined : undefined,
+              sheetUrl: uploadMethod === 'url' ? sheetUrl : undefined,
+              useSynthetic: uploadMethod === 'synthetic'
+            });
+          }}
           disabled={!canAnalyze || isAnalyzing}
           className={clsx(
             'px-8 py-4 rounded-xl font-bold text-lg transition-all flex items-center gap-3',
