@@ -161,15 +161,27 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
 
   // Calculate averages
   const dataWithAverages = useMemo(() => {
+    console.log('🔍 dataWithAverages useMemo:', { 
+      hasData: !!data, 
+      isArray: Array.isArray(data), 
+      dataLength: data?.length,
+      firstItem: data?.[0]
+    });
     if (!data || !Array.isArray(data)) return [];
-    return data.map(item => {
+    return data.map((item, index) => {
+      console.log(`Processing item ${index}:`, { item, hasMetrics: !!item?.metrics, metricsType: typeof item?.metrics });
       if (!item) {
         return { skill: 'Unknown', average: 0, metrics: {}, automation_readiness: 0, variability: {}, dimensions: {} };
       }
       if (!item.metrics) {
         return { ...item, average: 0 };
       }
-      const values = metrics.map(m => item.metrics?.[m.key]).filter(v => typeof v === 'number' && !isNaN(v));
+      console.log('About to map metrics for item:', { skill: item.skill, metrics: item.metrics, metricsKeys: Object.keys(item.metrics || {}) });
+      const values = metrics.map(m => {
+        const val = item.metrics?.[m.key];
+        console.log(`  Metric ${m.key}:`, val);
+        return val;
+      }).filter(v => typeof v === 'number' && !isNaN(v));
       const average = values.length > 0 ? values.reduce((sum, v) => sum + v, 0) / values.length : 0;
       return { ...item, average };
     });
