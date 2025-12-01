@@ -125,7 +125,11 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
   const dynamicTitle = useMemo(() => {
     const totalMetrics = data.length * metrics.length;
     const belowP75 = data.reduce((count, item) => {
-      return count + metrics.filter(m => item.metrics[m.key] < 85).length;
+      if (!item.metrics) return count;
+      return count + metrics.filter(m => {
+        const value = item.metrics[m.key];
+        return typeof value === 'number' && !isNaN(value) && value < 85;
+      }).length;
     }, 0);
     const percentage = Math.round((belowP75 / totalMetrics) * 100);
     
@@ -136,7 +140,11 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
     // Find metric with most issues
     const metricCounts = metrics.map(({ key, label }) => ({
       label,
-      count: data.filter(item => item.metrics[key] < 85).length,
+      count: data.filter(item => {
+        if (!item.metrics) return false;
+        const value = item.metrics[key];
+        return typeof value === 'number' && !isNaN(value) && value < 85;
+      }).length,
     }));
     metricCounts.sort((a, b) => b.count - a.count);
     const topMetric = metricCounts[0];
@@ -147,8 +155,11 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
   // Calculate averages
   const dataWithAverages = useMemo(() => {
     return data.map(item => {
-      const values = metrics.map(m => item.metrics[m.key]);
-      const average = values.reduce((sum, v) => sum + v, 0) / values.length;
+      if (!item.metrics) {
+        return { ...item, average: 0 };
+      }
+      const values = metrics.map(m => item.metrics[m.key]).filter(v => typeof v === 'number' && !isNaN(v));
+      const average = values.length > 0 ? values.reduce((sum, v) => sum + v, 0) / values.length : 0;
       return { ...item, average };
     });
   }, [data]);
