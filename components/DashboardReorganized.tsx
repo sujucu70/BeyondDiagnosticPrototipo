@@ -115,7 +115,7 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
               <div className="lg:col-span-2">
                 <h2 className="text-white text-2xl font-bold mb-6">Métricas Clave</h2>
                 <div className="grid grid-cols-2 gap-4">
-                  {analysisData.summaryKpis.map((kpi, index) => (
+                  {(analysisData.summaryKpis || []).map((kpi, index) => (
                     <KpiCard 
                       key={kpi.label} 
                       {...kpi}
@@ -143,7 +143,7 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
                 Principales Hallazgos
               </h3>
               <ul className="space-y-3 text-sm text-amber-900">
-                {analysisData.findings.map((finding, i) => (
+                {(analysisData.findings || []).map((finding, i) => (
                   <motion.li
                     key={i}
                     initial={{ opacity: 0, x: -10 }}
@@ -166,7 +166,7 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
                 Recomendaciones
               </h3>
               <ul className="space-y-3 text-sm text-[#3F3F3F]">
-                {analysisData.recommendations.map((rec, i) => (
+                {(analysisData.recommendations || []).map((rec, i) => (
                   <motion.li
                     key={i}
                     initial={{ opacity: 0, x: -10 }}
@@ -197,7 +197,7 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
             viewport={{ once: true }}
             className="grid grid-cols-1 lg:grid-cols-2 gap-6"
           >
-            {analysisData.dimensions.map((dim, index) => (
+            {(analysisData.dimensions || []).map((dim, index) => (
               <motion.div
                 key={dim.id}
                 initial={{ opacity: 0, y: 20 }}
