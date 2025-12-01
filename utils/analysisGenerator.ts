@@ -246,11 +246,11 @@ const generateHeatmapData = (
             volume,
             aht_seconds: aht_mean, // Renombrado para compatibilidad
             metrics: {
-                fcr: fcr_approx,
-                aht: Math.round(100 - ((aht_mean - 240) / 310) * 100), // Score normalizado
-                csat: avgCsat, // CSAT manual (estático)
-                hold_time: Math.max(0, Math.min(100, Math.round(100 - (avg_hold_time / 120) * 100))), // Normalizado: 0s=100, 120s=0
-                transfer_rate: Math.max(0, Math.min(100, Math.round(100 - (transfer_rate * 100)))) // Normalizado: 0%=100, 100%=0
+                fcr: isNaN(fcr_approx) ? 0 : Math.max(0, Math.min(100, Math.round(fcr_approx))),
+                aht: isNaN(aht_mean) ? 0 : Math.max(0, Math.min(100, Math.round(100 - ((aht_mean - 240) / 310) * 100))),
+                csat: isNaN(avgCsat) ? 0 : Math.max(0, Math.min(100, Math.round(avgCsat))),
+                hold_time: isNaN(avg_hold_time) ? 0 : Math.max(0, Math.min(100, Math.round(100 - (avg_hold_time / 120) * 100))),
+                transfer_rate: isNaN(transfer_rate) ? 0 : Math.max(0, Math.min(100, Math.round(100 - (transfer_rate * 100))))
             },
             annual_cost,
             variability: {

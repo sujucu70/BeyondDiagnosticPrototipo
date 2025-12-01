@@ -541,9 +541,9 @@ const DataInputRedesigned: React.FC<DataInputRedesignedProps> = ({
           onClick={() => {
             // Preparar segment_mapping
             const segmentMapping = (highValueQueues || mediumValueQueues || lowValueQueues) ? {
-              high_value_queues: highValueQueues.split(',').map(q => q.trim()).filter(q => q),
-              medium_value_queues: mediumValueQueues.split(',').map(q => q.trim()).filter(q => q),
-              low_value_queues: lowValueQueues.split(',').map(q => q.trim()).filter(q => q)
+              high_value_queues: (highValueQueues || '').split(',').map(q => q.trim()).filter(q => q),
+              medium_value_queues: (mediumValueQueues || '').split(',').map(q => q.trim()).filter(q => q),
+              low_value_queues: (lowValueQueues || '').split(',').map(q => q.trim()).filter(q => q)
             } : undefined;
             
             // Llamar a onAnalyze con todos los datos
