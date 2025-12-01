@@ -96,7 +96,12 @@ const EconomicModelPro: React.FC<EconomicModelProProps> = ({ data }) => {
   }, [annualSavings, initialInvestment, roi3yr, paybackMonths]);
 
   // Comparison with alternatives
-  const alternatives = useMemo(() => [
+  const alternatives = useMemo(() => {
+    try {
+      const safeRoi3yr = roi3yr || 0;
+      const safeInitialInvestment = initialInvestment || 0;
+      const safeAnnualSavings = annualSavings || 0;
+      return [
     {
       option: 'Do Nothing',
       investment: 0,
@@ -110,15 +115,15 @@ const EconomicModelPro: React.FC<EconomicModelProProps> = ({ data }) => {
       option: 'Solución Propuesta',
       investment: initialInvestment,
       savings3yr: annualSavings * 3,
-      roi: `${roi3yr.toFixed(1)}x`,
+      roi: `${safeRoi3yr.toFixed(1)}x`,
       risk: 'Medio',
       riskColor: 'text-amber-600',
       recommended: true,
     },
     {
       option: 'Alternativa Manual',
-      investment: initialInvestment * 0.5,
-      savings3yr: annualSavings * 1.5,
+      investment: safeInitialInvestment * 0.5,
+      savings3yr: safeAnnualSavings * 1.5,
       roi: '2.0x',
       risk: 'Bajo',
       riskColor: 'text-green-600',
@@ -126,14 +131,19 @@ const EconomicModelPro: React.FC<EconomicModelProProps> = ({ data }) => {
     },
     {
       option: 'Alternativa Premium',
-      investment: initialInvestment * 1.6,
-      savings3yr: annualSavings * 3.5,
+      investment: safeInitialInvestment * 1.5,
+      savings3yr: safeAnnualSavings * 2.3,
       roi: '3.3x',
       risk: 'Alto',
       riskColor: 'text-red-600',
       recommended: false,
     },
-  ], [initialInvestment, annualSavings, roi3yr]);
+      ];
+    } catch (error) {
+      console.error('❌ Error in alternatives useMemo:', error);
+      return [];
+    }
+  }, [initialInvestment, annualSavings, roi3yr]);
 
   // Financial metrics
   const financialMetrics = useMemo(() => {
