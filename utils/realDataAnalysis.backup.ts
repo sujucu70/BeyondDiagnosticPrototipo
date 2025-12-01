@@ -233,14 +233,11 @@ function generateHeatmapFromMetrics(
       skill: m.skill,
       volume: m.volume,
       aht_seconds: Math.round(m.aht_mean),
-      metrics: {
-        fcr: fcr_score,
-        aht: aht_score,
-        csat: csat_score,
-        hold_time: hold_time_score,
-        transfer_rate: transfer_rate_score
-      },
-      automation_readiness: Math.round(agentic_readiness * 10),
+      fcr: fcr_score,
+      aht: aht_score,
+      csat: csat_score,
+      hold_time: hold_time_score,
+      transfer_rate: transfer_rate_score,
       variability: {
         cv_aht: Math.round(m.cv_aht * 100),
         cv_talk_time: Math.round(m.cv_talk_time * 100),
