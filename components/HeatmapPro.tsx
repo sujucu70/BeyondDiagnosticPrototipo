@@ -204,32 +204,41 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
     console.log(`✅ sortedData: sorting ${dataWithAverages.length} items`);
     console.log('About to spread and sort dataWithAverages');
     return [...dataWithAverages].sort((a, b) => {
-      let aValue: number | string;
-      let bValue: number | string;
+      try {
+        if (!a || !b) {
+          console.error('sort: a or b is null/undefined', { a, b });
+          return 0;
+        }
+        let aValue: number | string;
+        let bValue: number | string;
 
-      if (sortKey === 'skill') {
-        aValue = a.skill;
-        bValue = b.skill;
-      } else if (sortKey === 'average') {
-        aValue = a.average;
-        bValue = b.average;
-      } else if (sortKey === 'cost') {
-        aValue = a.annual_cost || 0;
-        bValue = b.annual_cost || 0;
-      } else {
-        aValue = a.metrics?.[sortKey] ?? 0;
-        bValue = b.metrics?.[sortKey] ?? 0;
-      }
+        if (sortKey === 'skill') {
+          aValue = a?.skill ?? '';
+          bValue = b?.skill ?? '';
+        } else if (sortKey === 'average') {
+          aValue = a?.average ?? 0;
+          bValue = b?.average ?? 0;
+        } else if (sortKey === 'cost') {
+          aValue = a?.annual_cost ?? 0;
+          bValue = b?.annual_cost ?? 0;
+        } else {
+          aValue = a?.metrics?.[sortKey] ?? 0;
+          bValue = b?.metrics?.[sortKey] ?? 0;
+        }
 
-      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+          return sortOrder === 'asc' 
+            ? aValue.localeCompare(bValue)
+            : bValue.localeCompare(aValue);
+        }
+
         return sortOrder === 'asc' 
-          ? aValue.localeCompare(bValue)
-          : bValue.localeCompare(aValue);
+          ? (aValue as number) - (bValue as number)
+          : (bValue as number) - (aValue as number);
+      } catch (error) {
+        console.error('Error in sort function:', error, { a, b, sortKey, sortOrder });
+        return 0;
       }
-
-      return sortOrder === 'asc' 
-        ? (aValue as number) - (bValue as number)
-        : (bValue as number) - (aValue as number);
     });
   }, [dataWithAverages, sortKey, sortOrder]);
 
