@@ -83,6 +83,10 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
   const insights = useMemo(() => {
     const allMetrics: Array<{ skill: string; metric: string; value: number }> = [];
     
+    if (!data || !Array.isArray(data)) {
+      return { strengths: [], opportunities: [] };
+    }
+    
     data.forEach(item => {
       if (!item.metrics) return; // Skip items without metrics
       metrics.forEach(({ key, label }) => {
@@ -123,6 +127,9 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
 
   // Calculate dynamic title
   const dynamicTitle = useMemo(() => {
+    if (!data || !Array.isArray(data) || data.length === 0) {
+      return 'Análisis de métricas de rendimiento';
+    }
     const totalMetrics = data.length * metrics.length;
     const belowP75 = data.reduce((count, item) => {
       if (!item.metrics) return count;
@@ -154,8 +161,9 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
 
   // Calculate averages
   const dataWithAverages = useMemo(() => {
+    if (!data || !Array.isArray(data)) return [];
     return data.map(item => {
-      if (!item.metrics) {
+      if (!item || !item.metrics) {
         return { ...item, average: 0 };
       }
       const values = metrics.map(m => item.metrics[m.key]).filter(v => typeof v === 'number' && !isNaN(v));
