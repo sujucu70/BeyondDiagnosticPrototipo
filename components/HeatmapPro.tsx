@@ -81,12 +81,15 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
 
   // Calculate insights
   const insights = useMemo(() => {
+    console.log('💡 insights useMemo called');
     const allMetrics: Array<{ skill: string; metric: string; value: number }> = [];
     
     if (!data || !Array.isArray(data)) {
+      console.log('⚠️ insights: data is invalid');
       return { strengths: [], opportunities: [] };
     }
     
+    console.log(`✅ insights: processing ${data.length} items`);
     data.forEach(item => {
       if (!item.metrics) return; // Skip items without metrics
       metrics.forEach(({ key, label }) => {
@@ -127,9 +130,12 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
 
   // Calculate dynamic title
   const dynamicTitle = useMemo(() => {
+    console.log('📊 dynamicTitle useMemo called');
     if (!data || !Array.isArray(data) || data.length === 0) {
+      console.log('⚠️ dynamicTitle: data is invalid or empty');
       return 'Análisis de métricas de rendimiento';
     }
+    console.log(`✅ dynamicTitle: processing ${data.length} items`);
     const totalMetrics = data.length * metrics.length;
     const belowP75 = data.reduce((count, item) => {
       if (!item.metrics) return count;
@@ -161,27 +167,20 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
 
   // Calculate averages
   const dataWithAverages = useMemo(() => {
-    console.log('🔍 dataWithAverages useMemo:', { 
-      hasData: !!data, 
-      isArray: Array.isArray(data), 
-      dataLength: data?.length,
-      firstItem: data?.[0]
-    });
-    if (!data || !Array.isArray(data)) return [];
+    console.log('📋 dataWithAverages useMemo called');
+    if (!data || !Array.isArray(data)) {
+      console.log('⚠️ dataWithAverages: data is invalid');
+      return [];
+    }
+    console.log(`✅ dataWithAverages: processing ${data.length} items`);
     return data.map((item, index) => {
-      console.log(`Processing item ${index}:`, { item, hasMetrics: !!item?.metrics, metricsType: typeof item?.metrics });
       if (!item) {
         return { skill: 'Unknown', average: 0, metrics: {}, automation_readiness: 0, variability: {}, dimensions: {} };
       }
       if (!item.metrics) {
         return { ...item, average: 0 };
       }
-      console.log('About to map metrics for item:', { skill: item.skill, metrics: item.metrics, metricsKeys: Object.keys(item.metrics || {}) });
-      const values = metrics.map(m => {
-        const val = item.metrics?.[m.key];
-        console.log(`  Metric ${m.key}:`, val);
-        return val;
-      }).filter(v => typeof v === 'number' && !isNaN(v));
+      const values = metrics.map(m => item.metrics?.[m.key]).filter(v => typeof v === 'number' && !isNaN(v));
       const average = values.length > 0 ? values.reduce((sum, v) => sum + v, 0) / values.length : 0;
       return { ...item, average };
     });
