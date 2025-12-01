@@ -1,5 +1,6 @@
 // analysisGenerator.ts - v2.0 con 6 dimensiones
 import type { AnalysisData, Kpi, DimensionAnalysis, HeatmapDataPoint, Opportunity, RoadmapInitiative, EconomicModelData, BenchmarkDataPoint, Finding, Recommendation, TierKey, CustomerSegment } from '../types';
+import { generateAnalysisFromRealData } from './realDataAnalysis';
 import { RoadmapPhase } from '../types';
 import { BarChartHorizontal, Zap, Smile, DollarSign, Target, Globe } from 'lucide-react';
 import { calculateAgenticReadinessScore, type AgenticReadinessInput } from './agenticReadinessV2';
@@ -400,7 +401,57 @@ const generateBenchmarkData = (): BenchmarkDataPoint[] => {
     ];
 };
 
-export const generateAnalysis = (
+export const generateAnalysis = async (
+  tier: TierKey,
+  costPerHour: number = 20,
+  avgCsat: number = 85,
+  segmentMapping?: { high_value_queues: string[]; medium_value_queues: string[]; low_value_queues: string[] },
+  file?: File,
+  sheetUrl?: string,
+  useSynthetic?: boolean
+): Promise<AnalysisData> => {
+  // Si hay archivo, procesarlo
+  if (file && !useSynthetic) {
+    console.log('📄 Processing file:', file.name);
+    try {
+      const { parseFile, validateInteractions } = await import('./fileParser');
+      const interactions = await parseFile(file);
+      
+      console.log(`✅ Parsed ${interactions.length} interactions from file`);
+      
+      // Validar datos
+      const validation = validateInteractions(interactions);
+      console.log('🔍 Validation:', validation);
+      
+      if (!validation.valid) {
+        throw new Error(`Validación fallida: ${validation.errors.join(', ')}`);
+      }
+      
+      // Mostrar warnings si los hay
+      if (validation.warnings.length > 0) {
+        console.warn('⚠️ Warnings:', validation.warnings);
+      }
+      
+      // Generar análisis con datos reales
+      return generateAnalysisFromRealData(tier, interactions, costPerHour, avgCsat, segmentMapping);
+    } catch (error) {
+      console.error('❌ Error processing file:', error);
+      throw new Error(`Error procesando archivo: ${(error as Error).message}`);
+    }
+  }
+  
+  // Si hay URL de Google Sheets, procesarla (TODO: implementar)
+  if (sheetUrl && !useSynthetic) {
+    console.warn('🔗 Google Sheets URL processing not implemented yet, using synthetic data');
+  }
+  
+  // Generar datos sintéticos (fallback)
+  console.log('✨ Generating synthetic data');
+  return generateSyntheticAnalysis(tier, costPerHour, avgCsat, segmentMapping);
+};
+
+// Función auxiliar para generar análisis con datos sintéticos
+const generateSyntheticAnalysis = (
   tier: TierKey,
   costPerHour: number = 20,
   avgCsat: number = 85,

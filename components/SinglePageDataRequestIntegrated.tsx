@@ -48,10 +48,18 @@ const SinglePageDataRequestIntegrated: React.FC = () => {
     setIsAnalyzing(true);
     toast.loading('Generando análisis...', { id: 'analyzing' });
     
-    setTimeout(() => {
+    setTimeout(async () => {
       console.log('⏰ Generating analysis...');
       try {
-        const data = generateAnalysis(selectedTier, config.costPerHour, config.avgCsat, config.segmentMapping);
+        const data = await generateAnalysis(
+          selectedTier, 
+          config.costPerHour, 
+          config.avgCsat, 
+          config.segmentMapping,
+          config.file,
+          config.sheetUrl,
+          config.useSynthetic
+        );
         console.log('✅ Analysis generated successfully');
         
         setAnalysisData(data);
