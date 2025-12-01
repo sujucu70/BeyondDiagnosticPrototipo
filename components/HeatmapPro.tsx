@@ -279,8 +279,9 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
     setTooltip(null);
   };
 
-  return (
-    <div id="heatmap" className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm">
+  try {
+    return (
+      <div id="heatmap" className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm">
       {/* Header with Dynamic Title */}
       <div className="mb-6">
         <div className="flex items-start justify-between mb-3">
@@ -561,8 +562,17 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
         notes="FCR = First Contact Resolution, AHT = Average Handle Time, CSAT = Customer Satisfaction, Quality = QA Score | Benchmarks actualizados trimestralmente"
         lastUpdated="Enero 2025"
       />
-    </div>
-  );
+      </div>
+    );
+  } catch (error) {
+    console.error('❌ CRITICAL ERROR in HeatmapPro render:', error);
+    return (
+      <div className="bg-red-50 border-2 border-red-200 rounded-lg p-6">
+        <h3 className="text-lg font-semibold text-red-900 mb-2">❌ Error en Heatmap</h3>
+        <p className="text-red-800">No se pudo renderizar el componente. Error: {String(error)}</p>
+      </div>
+    );
+  }
 };
 
 export default HeatmapPro;
