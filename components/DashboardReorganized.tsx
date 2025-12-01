@@ -264,48 +264,56 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
         </section>
 
         {/* 8. OPPORTUNITY MATRIX */}
-        <section>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <OpportunityMatrixPro data={analysisData.opportunities} heatmapData={analysisData.heatmapData} />
-          </motion.div>
-        </section>
+        {analysisData.opportunities && analysisData.opportunities.length > 0 && (
+          <section>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <OpportunityMatrixPro data={analysisData.opportunities} heatmapData={analysisData.heatmapData} />
+            </motion.div>
+          </section>
+        )}
 
         {/* 9. ROADMAP */}
-        <section>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <RoadmapPro data={analysisData.roadmap} />
-          </motion.div>
-        </section>
+        {analysisData.roadmap && analysisData.roadmap.length > 0 && (
+          <section>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <RoadmapPro data={analysisData.roadmap} />
+            </motion.div>
+          </section>
+        )}
 
         {/* 10. ECONOMIC MODEL */}
-        <section>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <EconomicModelPro data={analysisData.economicModel} />
-          </motion.div>
-        </section>
+        {analysisData.economicModel && (
+          <section>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <EconomicModelPro data={analysisData.economicModel} />
+            </motion.div>
+          </section>
+        )}
 
         {/* 11. BENCHMARK REPORT */}
-        <section>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <BenchmarkReportPro data={analysisData.benchmarkData} />
-          </motion.div>
-        </section>
+        {analysisData.benchmarkData && analysisData.benchmarkData.length > 0 && (
+          <section>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <BenchmarkReportPro data={analysisData.benchmarkData} />
+            </motion.div>
+          </section>
+        )}
 
         {/* Footer */}
         <section className="pt-8 pb-4">
