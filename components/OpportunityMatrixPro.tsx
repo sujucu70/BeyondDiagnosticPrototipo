@@ -30,10 +30,12 @@ const OpportunityMatrixPro: React.FC<OpportunityMatrixProProps> = ({ data, heatm
     if (!heatmapData) return opp.feasibility;
     
     // Buscar skill relacionada en heatmap
-    const relatedSkill = heatmapData.find(h => 
-      opp.name.toLowerCase().includes(h.skill.toLowerCase()) ||
-      h.skill.toLowerCase().includes(opp.name.toLowerCase().split(' ')[0])
-    );
+    const relatedSkill = heatmapData.find(h => {
+      if (!h.skill || !opp.name) return false;
+      const skillLower = h.skill.toLowerCase();
+      const oppNameLower = opp.name.toLowerCase();
+      return oppNameLower.includes(skillLower) || skillLower.includes(oppNameLower.split(' ')[0]);
+    });
     
     if (!relatedSkill) return opp.feasibility;
     
@@ -303,10 +305,12 @@ const OpportunityMatrixPro: React.FC<OpportunityMatrixProProps> = ({ data, heatm
                 <span className="text-white font-bold text-lg">#{opp.priority}</span>
                 {/* v2.0: Indicador de variabilidad si hay datos de heatmap */}
                 {heatmapData && (() => {
-                  const relatedSkill = heatmapData.find(h => 
-                    opp.name.toLowerCase().includes(h.skill.toLowerCase()) ||
-                    h.skill.toLowerCase().includes(opp.name.toLowerCase().split(' ')[0])
-                  );
+                  const relatedSkill = heatmapData.find(h => {
+                    if (!h.skill || !opp.name) return false;
+                    const skillLower = h.skill.toLowerCase();
+                    const oppNameLower = opp.name.toLowerCase();
+                    return oppNameLower.includes(skillLower) || skillLower.includes(oppNameLower.split(' ')[0]);
+                  });
                   if (relatedSkill && relatedSkill.automation_readiness < 60) {
                     return (
                       <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center border-2 border-white">
