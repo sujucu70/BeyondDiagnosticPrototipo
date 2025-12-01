@@ -2,7 +2,7 @@
  * Generación de análisis con datos reales (no sintéticos)
  */
 
-import type { AnalysisData, Kpi, DimensionAnalysis, HeatmapDataPoint, Opportunity, RoadmapInitiative, EconomicModelData, BenchmarkDataPoint, Finding, Recommendation, TierKey, CustomerSegment, RawInteraction } from '../types';
+import type { AnalysisData, Kpi, DimensionAnalysis, HeatmapDataPoint, Opportunity, RoadmapInitiative, EconomicModelData, BenchmarkDataPoint, Finding, Recommendation, TierKey, CustomerSegment, RawInteraction, AgenticReadinessResult, SubFactor, SkillMetrics } from '../types';
 import { RoadmapPhase } from '../types';
 import { BarChartHorizontal, Zap, Smile, DollarSign, Target, Globe } from 'lucide-react';
 import { calculateAgenticReadinessScore, type AgenticReadinessInput } from './agenticReadinessV2';
@@ -367,7 +367,7 @@ function generateDimensionsFromRealData(
 /**
  * Calcular Agentic Readiness desde datos reales
  */
-function calculateAgenticReadinessFromRealData(metrics: SkillMetrics[]) {
+function calculateAgenticReadinessFromRealData(metrics: SkillMetrics[]): AgenticReadinessResult {
   const totalVolume = metrics.reduce((sum, m) => sum + m.volume, 0);
   const avgCV = metrics.reduce((sum, m) => sum + m.cv_aht, 0) / metrics.length;
   const avgTransferRate = metrics.reduce((sum, m) => sum + m.transfer_rate, 0) / metrics.length;
@@ -375,17 +375,65 @@ function calculateAgenticReadinessFromRealData(metrics: SkillMetrics[]) {
   // Predictibilidad
   const predictability = Math.max(0, Math.min(10, 10 - ((avgCV - 0.3) / 1.2 * 10)));
   
+  // Complejidad Inversa
+  const complexity_inverse = Math.max(0, Math.min(10, 10 - (avgTransferRate / 10)));
+  
   // ROI (simplificado)
   const roi = Math.min(10, totalVolume / 1000);
   
-  return {
-    score: Math.round((predictability * 0.4 + (10 - avgTransferRate / 10) * 0.35 + roi * 0.25) * 10) / 10,
-    confidence: totalVolume > 1000 ? 'high' as const : totalVolume > 500 ? 'medium' as const : 'low' as const,
-    breakdown: {
-      repetitiveness: Math.round(roi * 10) / 10,
-      predictability: Math.round(predictability * 10) / 10,
-      roi: Math.round(roi * 10) / 10
+  // Repetitividad (basada en volumen)
+  const repetitiveness = Math.min(10, totalVolume / 500);
+  
+  // Score final
+  const score = Math.round((predictability * 0.4 + complexity_inverse * 0.35 + repetitiveness * 0.25) * 10) / 10;
+  
+  // Tier basado en score
+  let tier: TierKey;
+  if (score >= 8) tier = 'gold';
+  else if (score >= 5) tier = 'silver';
+  else tier = 'bronze';
+  
+  // Sub-factors
+  const sub_factors: SubFactor[] = [
+    {
+      name: 'predictibilidad',
+      displayName: 'Predictibilidad',
+      score: Math.round(predictability * 10) / 10,
+      weight: 0.4,
+      description: `CV AHT promedio: ${Math.round(avgCV * 100)}%`
+    },
+    {
+      name: 'complejidad_inversa',
+      displayName: 'Complejidad Inversa',
+      score: Math.round(complexity_inverse * 10) / 10,
+      weight: 0.35,
+      description: `Tasa de transferencia promedio: ${Math.round(avgTransferRate)}%`
+    },
+    {
+      name: 'repetitividad',
+      displayName: 'Repetitividad',
+      score: Math.round(repetitiveness * 10) / 10,
+      weight: 0.25,
+      description: `Volumen total: ${totalVolume.toLocaleString('es-ES')} interacciones`
     }
+  ];
+  
+  // Interpretation
+  let interpretation: string;
+  if (score >= 8) {
+    interpretation = 'Excelente candidato para automatización. Alta predictibilidad, baja complejidad y volumen significativo.';
+  } else if (score >= 5) {
+    interpretation = 'Buen candidato para asistencia con IA. Considere implementar copilots o asistentes virtuales.';
+  } else {
+    interpretation = 'Requiere optimización previa. Enfóquese en estandarizar procesos y reducir variabilidad antes de automatizar.';
+  }
+  
+  return {
+    score,
+    sub_factors,
+    tier,
+    confidence: totalVolume > 1000 ? 'high' as const : totalVolume > 500 ? 'medium' as const : 'low' as const,
+    interpretation
   };
 }
 
