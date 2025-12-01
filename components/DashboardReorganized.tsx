@@ -235,21 +235,29 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
         )}
 
         {/* 5. DISTRIBUCIÓN HORARIA (si disponible) */}
-        {analysisData.dimensions.find(d => d.name === 'volumetry_distribution')?.distribution_data && (
-          <section>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
-              <HourlyDistributionChart 
-                hourly={analysisData.dimensions.find(d => d.name === 'volumetry_distribution')!.distribution_data!.hourly}
-                off_hours_pct={analysisData.dimensions.find(d => d.name === 'volumetry_distribution')!.distribution_data!.off_hours_pct}
-                peak_hours={analysisData.dimensions.find(d => d.name === 'volumetry_distribution')!.distribution_data!.peak_hours}
-              />
-            </motion.div>
-          </section>
-        )}
+        {(() => {
+          const volumetryDim = analysisData.dimensions.find(d => d.name === 'volumetry_distribution');
+          const distData = volumetryDim?.distribution_data;
+          
+          if (distData && distData.hourly && distData.hourly.length > 0) {
+            return (
+              <section>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                >
+                  <HourlyDistributionChart 
+                    hourly={distData.hourly}
+                    off_hours_pct={distData.off_hours_pct}
+                    peak_hours={distData.peak_hours}
+                  />
+                </motion.div>
+              </section>
+            );
+          }
+          return null;
+        })()}
 
         {/* 6. HEATMAP DE PERFORMANCE COMPETITIVO */}
         <section>
