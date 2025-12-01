@@ -88,7 +88,7 @@ const SinglePageDataRequestIntegrated: React.FC = () => {
   // Dashboard view
   if (view === 'dashboard' && analysisData) {
     console.log('📊 Rendering dashboard with data:', analysisData);
-    console.log('📊 Heatmap data length:', analysisData.heatmap?.length);
+    console.log('📊 Heatmap data length:', analysisData.heatmapData?.length);
     console.log('📊 Dimensions length:', analysisData.dimensions?.length);
     
     try {

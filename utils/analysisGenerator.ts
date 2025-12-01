@@ -539,6 +539,7 @@ const generateSyntheticAnalysis = (
   const heatmapData = generateHeatmapData(costPerHour, avgCsat, segmentMapping);
   
   return {
+    tier,
     overallHealthScore,
     summaryKpis,
     dimensions,

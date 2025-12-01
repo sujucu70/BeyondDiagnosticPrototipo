@@ -248,17 +248,17 @@ export interface AgenticReadinessResult {
 }
 
 export interface AnalysisData {
-  tier: TierKey;
+  tier?: TierKey;  // Opcional para compatibilidad
   overallHealthScore: number;
   summaryKpis: Kpi[];
   dimensions: DimensionAnalysis[];
-  keyFindings: Finding[];
+  findings: Finding[];  // Actualizado de keyFindings
   recommendations: Recommendation[];
-  heatmap: HeatmapDataPoint[];
-  opportunityMatrix: Opportunity[];
+  heatmapData: HeatmapDataPoint[];  // Actualizado de heatmap
+  opportunities: Opportunity[];  // Actualizado de opportunityMatrix
   roadmap: RoadmapInitiative[];
   economicModel: EconomicModelData;
-  benchmarkReport: BenchmarkDataPoint[];
+  benchmarkData: BenchmarkDataPoint[];  // Actualizado de benchmarkReport
   agenticReadiness?: AgenticReadinessResult;  // v2.0: Nuevo campo
   staticConfig?: StaticConfig;  // v2.0: Configuración estática usada
 }

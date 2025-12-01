@@ -81,6 +81,7 @@ export function generateAnalysisFromRealData(
   const benchmarkData = generateBenchmarkFromRealData(skillMetrics);
   
   return {
+    tier,
     overallHealthScore,
     summaryKpis,
     dimensions,

@@ -61,7 +61,7 @@ const SectionDivider: React.FC<{ icon: React.ReactNode; title: string }> = ({ ic
 );
 
 const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisData, onBack }) => {
-  const tierInfo = TIERS[analysisData.tier];
+  const tierInfo = TIERS[analysisData.tier || 'gold'];  // Default to gold if tier is undefined
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
@@ -143,7 +143,7 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
                 Principales Hallazgos
               </h3>
               <ul className="space-y-3 text-sm text-amber-900">
-                {analysisData.keyFindings.map((finding, i) => (
+                {analysisData.findings.map((finding, i) => (
                   <motion.li
                     key={i}
                     initial={{ opacity: 0, x: -10 }}
@@ -248,7 +248,7 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <HeatmapPro data={analysisData.heatmap} />
+            <HeatmapPro data={analysisData.heatmapData} />
           </motion.div>
         </section>
 
@@ -259,7 +259,7 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <VariabilityHeatmap data={analysisData.heatmap} />
+            <VariabilityHeatmap data={analysisData.heatmapData} />
           </motion.div>
         </section>
 
@@ -270,7 +270,7 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <OpportunityMatrixPro data={analysisData.opportunityMatrix} heatmapData={analysisData.heatmap} />
+            <OpportunityMatrixPro data={analysisData.opportunities} heatmapData={analysisData.heatmapData} />
           </motion.div>
         </section>
 
@@ -303,7 +303,7 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <BenchmarkReportPro data={analysisData.benchmarkReport} />
+            <BenchmarkReportPro data={analysisData.benchmarkData} />
           </motion.div>
         </section>
 
