@@ -48,63 +48,33 @@ const getRiskLabel = (initiative: RoadmapInitiative): string => {
 const RoadmapPro: React.FC<RoadmapProProps> = ({ data }) => {
   // Group initiatives by phase
   const groupedData = useMemo(() => {
-    try {
-      if (!data || !Array.isArray(data)) return {
-        [RoadmapPhase.Automate]: [],
-        [RoadmapPhase.Assist]: [],
-        [RoadmapPhase.Augment]: [],
-      };
-      const groups: Record<RoadmapPhase, RoadmapInitiative[]> = {
-        [RoadmapPhase.Automate]: [],
-        [RoadmapPhase.Assist]: [],
-        [RoadmapPhase.Augment]: [],
-      };
-      
-      data.forEach(item => {
-        if (item?.phase && groups[item.phase]) {
-          groups[item.phase].push(item);
-        }
-      });
-      
-      return groups;
-    } catch (error) {
-      console.error('❌ Error in groupedData useMemo:', error);
-      return {
-        [RoadmapPhase.Automate]: [],
-        [RoadmapPhase.Assist]: [],
-        [RoadmapPhase.Augment]: [],
-      };
-    }
+    const groups: Record<RoadmapPhase, RoadmapInitiative[]> = {
+      [RoadmapPhase.Automate]: [],
+      [RoadmapPhase.Assist]: [],
+      [RoadmapPhase.Augment]: [],
+    };
+    
+    data.forEach(item => {
+      if (item.phase && groups[item.phase]) {
+        groups[item.phase].push(item);
+      }
+    });
+    
+    return groups;
   }, [data]);
 
   // Calculate summary metrics
   const summary = useMemo(() => {
-    try {
-      if (!data || !Array.isArray(data)) return {
-        totalInvestment: 0,
-        totalResources: 0,
-        duration: 18,
-        initiativeCount: 0,
-      };
-      const totalInvestment = data.reduce((sum, item) => sum + (item?.investment || 0), 0);
-      const totalResources = data.length > 0 ? Math.max(...data.map(item => item?.resources?.length || 0)) : 0;
-      const duration = 18;
-      
-      return {
-        totalInvestment,
-        totalResources,
-        duration,
-        initiativeCount: data.length,
-      };
-    } catch (error) {
-      console.error('❌ Error in summary useMemo:', error);
-      return {
-        totalInvestment: 0,
-        totalResources: 0,
-        duration: 18,
-        initiativeCount: 0,
-      };
-    }
+    const totalInvestment = data.reduce((sum, item) => sum + item.investment, 0);
+    const totalResources = Math.max(...data.map(item => item.resources.length));
+    const duration = 18; // months
+    
+    return {
+      totalInvestment,
+      totalResources,
+      duration,
+      initiativeCount: data.length,
+    };
   }, [data]);
 
   // Timeline quarters (Q1 2025 - Q2 2026)
