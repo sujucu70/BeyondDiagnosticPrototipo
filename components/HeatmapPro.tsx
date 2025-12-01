@@ -377,7 +377,12 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
           </thead>
           <tbody>
             <AnimatePresence>
-              {sortedData.map((item, index) => (
+                  {sortedData.map((item, index) => {
+                    // Calculate average cost once
+                    const avgCost = sortedData.length > 0 
+                      ? sortedData.reduce((sum, d) => sum + (d?.annual_cost || 0), 0) / sortedData.length 
+                      : 0;
+                    return (
                 <motion.tr
                   key={item.skill}
                   initial={{ opacity: 0, y: -10 }}
@@ -437,9 +442,9 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
                         </span>
                         <div className={clsx(
                           'w-3 h-3 rounded-full',
-                          item.annual_cost >= sortedData.reduce((sum, d) => sum + (d.annual_cost || 0), 0) / sortedData.length * 1.2
+                          (item?.annual_cost || 0) >= avgCost * 1.2
                             ? 'bg-red-500'  // Alto coste (>120% del promedio)
-                            : item.annual_cost >= sortedData.reduce((sum, d) => sum + (d.annual_cost || 0), 0) / sortedData.length * 0.8
+                            : (item?.annual_cost || 0) >= avgCost * 0.8
                             ? 'bg-amber-400'  // Coste medio (80-120% del promedio)
                             : 'bg-green-500'  // Bajo coste (<80% del promedio)
                         )} />
@@ -448,8 +453,9 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
                       <span className="text-slate-400 text-xs">N/A</span>
                     )}
                   </td>
-                </motion.tr>
-              ))}
+                  </motion.tr>
+                    );
+                  })}
             </AnimatePresence>
           </tbody>
         </table>
