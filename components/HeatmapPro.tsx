@@ -81,109 +81,119 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
 
   // Calculate insights
   const insights = useMemo(() => {
-    console.log('💡 insights useMemo called');
-    const allMetrics: Array<{ skill: string; metric: string; value: number }> = [];
-    
-    if (!data || !Array.isArray(data)) {
-      console.log('⚠️ insights: data is invalid');
+    try {
+      console.log('💡 insights useMemo called');
+      const allMetrics: Array<{ skill: string; metric: string; value: number }> = [];
+      
+      if (!data || !Array.isArray(data)) {
+        console.log('⚠️ insights: data is invalid');
+        return { strengths: [], opportunities: [] };
+      }
+      
+      console.log(`✅ insights: processing ${data.length} items`);
+      data.forEach(item => {
+        if (!item?.metrics) return;
+        metrics.forEach(({ key, label }) => {
+          const value = item.metrics?.[key];
+          if (typeof value === 'number' && !isNaN(value)) {
+            allMetrics.push({
+              skill: item?.skill || 'Unknown',
+              metric: label,
+              value: value,
+            });
+          }
+        });
+      });
+
+      allMetrics.sort((a, b) => b.value - a.value);
+
+      const strengths: Insight[] = (allMetrics.slice(0, 3) || []).map(m => ({
+        type: 'strength' as const,
+        skill: m?.skill || 'Unknown',
+        metric: m?.metric || 'Unknown',
+        value: m?.value || 0,
+        percentile: getPercentile(m?.value || 0),
+      }));
+
+      const opportunities: Insight[] = (allMetrics.slice(-3).reverse() || []).map(m => ({
+        type: 'opportunity' as const,
+        skill: m?.skill || 'Unknown',
+        metric: m?.metric || 'Unknown',
+        value: m?.value || 0,
+        percentile: getPercentile(m?.value || 0),
+      }));
+
+      return { strengths, opportunities };
+    } catch (error) {
+      console.error('❌ Error in insights useMemo:', error);
       return { strengths: [], opportunities: [] };
     }
-    
-    console.log(`✅ insights: processing ${data.length} items`);
-    data.forEach(item => {
-      if (!item.metrics) return; // Skip items without metrics
-      metrics.forEach(({ key, label }) => {
-        const value = item.metrics[key];
-        if (typeof value === 'number' && !isNaN(value)) {
-          allMetrics.push({
-            skill: item.skill,
-            metric: label,
-            value: value,
-          });
-        }
-      });
-    });
-
-    // Sort by value
-    allMetrics.sort((a, b) => b.value - a.value);
-
-    // Top 3 strengths (highest values)
-    const strengths: Insight[] = allMetrics.slice(0, 3).map(m => ({
-      type: 'strength',
-      skill: m.skill,
-      metric: m.metric,
-      value: m.value,
-      percentile: getPercentile(m.value),
-    }));
-
-    // Top 3 opportunities (lowest values)
-    const opportunities: Insight[] = allMetrics.slice(-3).reverse().map(m => ({
-      type: 'opportunity',
-      skill: m.skill,
-      metric: m.metric,
-      value: m.value,
-      percentile: getPercentile(m.value),
-    }));
-
-    return { strengths, opportunities };
   }, [data]);
 
   // Calculate dynamic title
   const dynamicTitle = useMemo(() => {
-    console.log('📊 dynamicTitle useMemo called');
-    if (!data || !Array.isArray(data) || data.length === 0) {
-      console.log('⚠️ dynamicTitle: data is invalid or empty');
+    try {
+      console.log('📊 dynamicTitle useMemo called');
+      if (!data || !Array.isArray(data) || data.length === 0) {
+        console.log('⚠️ dynamicTitle: data is invalid or empty');
+        return 'Análisis de métricas de rendimiento';
+      }
+      console.log(`✅ dynamicTitle: processing ${data.length} items`);
+      const totalMetrics = data.length * metrics.length;
+      const belowP75 = data.reduce((count, item) => {
+        if (!item?.metrics) return count;
+        return count + metrics.filter(m => {
+          const value = item.metrics?.[m.key];
+          return typeof value === 'number' && !isNaN(value) && value < 85;
+        }).length;
+      }, 0);
+      const percentage = Math.round((belowP75 / totalMetrics) * 100);
+      
+      const totalCost = data.reduce((sum, item) => sum + (item?.annual_cost || 0), 0);
+      const costStr = `€${Math.round(totalCost / 1000)}K`;
+      
+      const metricCounts = metrics.map(({ key, label }) => ({
+        label,
+        count: data.filter(item => {
+          if (!item?.metrics) return false;
+          const value = item.metrics?.[key];
+          return typeof value === 'number' && !isNaN(value) && value < 85;
+        }).length,
+      }));
+      metricCounts.sort((a, b) => b.count - a.count);
+      const topMetric = metricCounts?.[0];
+
+      return `${percentage}% de las métricas están por debajo de P75, representando ${costStr} en coste anual, con ${topMetric?.label || 'N/A'} mostrando la mayor oportunidad de mejora`;
+    } catch (error) {
+      console.error('❌ Error in dynamicTitle useMemo:', error);
       return 'Análisis de métricas de rendimiento';
     }
-    console.log(`✅ dynamicTitle: processing ${data.length} items`);
-    const totalMetrics = data.length * metrics.length;
-    const belowP75 = data.reduce((count, item) => {
-      if (!item.metrics) return count;
-      return count + metrics.filter(m => {
-        const value = item.metrics[m.key];
-        return typeof value === 'number' && !isNaN(value) && value < 85;
-      }).length;
-    }, 0);
-    const percentage = Math.round((belowP75 / totalMetrics) * 100);
-    
-    // Calculate total annual cost
-    const totalCost = data.reduce((sum, item) => sum + (item.annual_cost || 0), 0);
-    const costStr = `€${Math.round(totalCost / 1000)}K`;
-    
-    // Find metric with most issues
-    const metricCounts = metrics.map(({ key, label }) => ({
-      label,
-      count: data.filter(item => {
-        if (!item.metrics) return false;
-        const value = item.metrics[key];
-        return typeof value === 'number' && !isNaN(value) && value < 85;
-      }).length,
-    }));
-    metricCounts.sort((a, b) => b.count - a.count);
-    const topMetric = metricCounts[0];
-
-    return `${percentage}% de las métricas están por debajo de P75, representando ${costStr} en coste anual, con ${topMetric.label} mostrando la mayor oportunidad de mejora`;
   }, [data]);
 
   // Calculate averages
   const dataWithAverages = useMemo(() => {
-    console.log('📋 dataWithAverages useMemo called');
-    if (!data || !Array.isArray(data)) {
-      console.log('⚠️ dataWithAverages: data is invalid');
+    try {
+      console.log('📋 dataWithAverages useMemo called');
+      if (!data || !Array.isArray(data)) {
+        console.log('⚠️ dataWithAverages: data is invalid');
+        return [];
+      }
+      console.log(`✅ dataWithAverages: processing ${data.length} items`);
+      return data.map((item, index) => {
+        if (!item) {
+          return { skill: 'Unknown', average: 0, metrics: {}, automation_readiness: 0, variability: {}, dimensions: {} };
+        }
+        if (!item.metrics) {
+          return { ...item, average: 0 };
+        }
+        const values = metrics.map(m => item.metrics?.[m.key]).filter(v => typeof v === 'number' && !isNaN(v));
+        const average = values.length > 0 ? values.reduce((sum, v) => sum + v, 0) / values.length : 0;
+        return { ...item, average };
+      });
+    } catch (error) {
+      console.error('❌ Error in dataWithAverages useMemo:', error);
       return [];
     }
-    console.log(`✅ dataWithAverages: processing ${data.length} items`);
-    return data.map((item, index) => {
-      if (!item) {
-        return { skill: 'Unknown', average: 0, metrics: {}, automation_readiness: 0, variability: {}, dimensions: {} };
-      }
-      if (!item.metrics) {
-        return { ...item, average: 0 };
-      }
-      const values = metrics.map(m => item.metrics?.[m.key]).filter(v => typeof v === 'number' && !isNaN(v));
-      const average = values.length > 0 ? values.reduce((sum, v) => sum + v, 0) / values.length : 0;
-      return { ...item, average };
-    });
   }, [data]);
 
   const handleSort = (key: SortKey) => {
@@ -196,14 +206,15 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
   };
 
   const sortedData = useMemo(() => {
-    console.log('🔄 sortedData useMemo called', { hasDataWithAverages: !!dataWithAverages, isArray: Array.isArray(dataWithAverages), length: dataWithAverages?.length });
-    if (!dataWithAverages || !Array.isArray(dataWithAverages)) {
-      console.log('⚠️ sortedData: dataWithAverages is invalid');
-      return [];
-    }
-    console.log(`✅ sortedData: sorting ${dataWithAverages.length} items`);
-    console.log('About to spread and sort dataWithAverages');
-    const sorted = [...dataWithAverages].sort((a, b) => {
+    try {
+      console.log('🔄 sortedData useMemo called', { hasDataWithAverages: !!dataWithAverages, isArray: Array.isArray(dataWithAverages), length: dataWithAverages?.length });
+      if (!dataWithAverages || !Array.isArray(dataWithAverages)) {
+        console.log('⚠️ sortedData: dataWithAverages is invalid');
+        return [];
+      }
+      console.log(`✅ sortedData: sorting ${dataWithAverages.length} items`);
+      console.log('About to spread and sort dataWithAverages');
+      const sorted = [...dataWithAverages].sort((a, b) => {
       try {
         if (!a || !b) {
           console.error('sort: a or b is null/undefined', { a, b });
@@ -239,9 +250,13 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
         console.error('Error in sort function:', error, { a, b, sortKey, sortOrder });
         return 0;
       }
-    });
-    console.log('✅ Sort completed successfully', { sortedLength: sorted.length });
-    return sorted;
+      });
+      console.log('✅ Sort completed successfully', { sortedLength: sorted.length });
+      return sorted;
+    } catch (error) {
+      console.error('❌ Error in sortedData useMemo:', error);
+      return [];
+    }
   }, [dataWithAverages, sortKey, sortOrder]);
 
   const handleCellHover = (
