@@ -196,7 +196,13 @@ const HeatmapPro: React.FC<HeatmapProProps> = ({ data }) => {
   };
 
   const sortedData = useMemo(() => {
-    if (!dataWithAverages || !Array.isArray(dataWithAverages)) return [];
+    console.log('🔄 sortedData useMemo called', { hasDataWithAverages: !!dataWithAverages, isArray: Array.isArray(dataWithAverages), length: dataWithAverages?.length });
+    if (!dataWithAverages || !Array.isArray(dataWithAverages)) {
+      console.log('⚠️ sortedData: dataWithAverages is invalid');
+      return [];
+    }
+    console.log(`✅ sortedData: sorting ${dataWithAverages.length} items`);
+    console.log('About to spread and sort dataWithAverages');
     return [...dataWithAverages].sort((a, b) => {
       let aValue: number | string;
       let bValue: number | string;
