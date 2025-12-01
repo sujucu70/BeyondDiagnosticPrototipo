@@ -14,6 +14,7 @@ import EconomicModelPro from './EconomicModelPro';
 import BenchmarkReportPro from './BenchmarkReportPro';
 import { AgenticReadinessBreakdown } from './AgenticReadinessBreakdown';
 import { HourlyDistributionChart } from './HourlyDistributionChart';
+import ErrorBoundary from './ErrorBoundary';
 
 interface DashboardReorganizedProps {
   analysisData: AnalysisData;
@@ -266,7 +267,9 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <HeatmapPro data={analysisData.heatmapData} />
+            <ErrorBoundary componentName="Heatmap de Métricas">
+              <HeatmapPro data={analysisData.heatmapData} />
+            </ErrorBoundary>
           </motion.div>
         </section>
 
