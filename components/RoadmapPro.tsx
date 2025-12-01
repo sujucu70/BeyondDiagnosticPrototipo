@@ -55,7 +55,9 @@ const RoadmapPro: React.FC<RoadmapProProps> = ({ data }) => {
     };
     
     data.forEach(item => {
-      groups[item.phase].push(item);
+      if (item.phase && groups[item.phase]) {
+        groups[item.phase].push(item);
+      }
     });
     
     return groups;
