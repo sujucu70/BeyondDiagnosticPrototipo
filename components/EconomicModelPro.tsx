@@ -168,8 +168,9 @@ const EconomicModelPro: React.FC<EconomicModelProProps> = ({ data }) => {
     return { npv, irr, tco3yr, valueCreated };
   }, [initialInvestment, annualSavings]);
 
-  return (
-    <div id="economic-model" className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm">
+  try {
+    return (
+      <div id="economic-model" className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm">
       {/* Header with Dynamic Title */}
       <div className="mb-6">
         <h3 className="font-bold text-2xl text-slate-800 mb-2">
@@ -486,8 +487,17 @@ const EconomicModelPro: React.FC<EconomicModelProProps> = ({ data }) => {
         notes="Desglose de costos: Software (43%), Implementación (29%), Training (18%), Contingencia (10%) | Desglose de ahorros: Automatización (45%), Eficiencia operativa (30%), Mejora FCR (15%), Reducción attrition (7.5%), Otros (2.5%) | Sensibilidad: ±20% en ahorros refleja variabilidad en adopción y eficiencia | TCO 3 años incluye costes recurrentes (20% anual)"
         lastUpdated="Enero 2025"
       />
-    </div>
-  );
+      </div>
+    );
+  } catch (error) {
+    console.error('❌ CRITICAL ERROR in EconomicModelPro render:', error);
+    return (
+      <div className="bg-red-50 border-2 border-red-200 rounded-lg p-6">
+        <h3 className="text-lg font-semibold text-red-900 mb-2">❌ Error en Modelo Económico</h3>
+        <p className="text-red-800">No se pudo renderizar el componente. Error: {String(error)}</p>
+      </div>
+    );
+  }
 };
 
 export default EconomicModelPro;
