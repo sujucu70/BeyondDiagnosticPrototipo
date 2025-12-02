@@ -127,19 +127,20 @@ function calculateSkillMetrics(interactions: RawInteraction[], costPerHour: numb
   
   skillGroups.forEach((group, skill) => {
     const volume = group.length;
-    
+    if (volume === 0) return;  // Evitar división por cero
+
     // AHT = duration_talk + hold_time + wrap_up_time
     const ahts = group.map(i => i.duration_talk + i.hold_time + i.wrap_up_time);
     const aht_mean = ahts.reduce((sum, v) => sum + v, 0) / volume;
     const aht_variance = ahts.reduce((sum, v) => sum + Math.pow(v - aht_mean, 2), 0) / volume;
     const aht_std = Math.sqrt(aht_variance);
-    const cv_aht = aht_std / aht_mean;
-    
+    const cv_aht = aht_mean > 0 ? aht_std / aht_mean : 0;
+
     // Talk time CV
     const talkTimes = group.map(i => i.duration_talk);
     const talk_mean = talkTimes.reduce((sum, v) => sum + v, 0) / volume;
     const talk_std = Math.sqrt(talkTimes.reduce((sum, v) => sum + Math.pow(v - talk_mean, 2), 0) / volume);
-    const cv_talk_time = talk_std / talk_mean;
+    const cv_talk_time = talk_mean > 0 ? talk_std / talk_mean : 0;
     
     // Transfer rate
     const transfers = group.filter(i => i.transfer_flag).length;
@@ -276,11 +277,11 @@ function generateHeatmapFromMetrics(
  */
 function calculateHealthScore(heatmapData: HeatmapDataPoint[]): number {
   if (heatmapData.length === 0) return 50;
-  
-  const avgFCR = heatmapData.reduce((sum, d) => sum + d.fcr, 0) / heatmapData.length;
-  const avgAHT = heatmapData.reduce((sum, d) => sum + d.aht, 0) / heatmapData.length;
-  const avgCSAT = heatmapData.reduce((sum, d) => sum + d.csat, 0) / heatmapData.length;
-  const avgVariability = heatmapData.reduce((sum, d) => sum + (100 - d.variability.cv_aht), 0) / heatmapData.length;
+
+  const avgFCR = heatmapData.reduce((sum, d) => sum + (d.metrics?.fcr || 0), 0) / heatmapData.length;
+  const avgAHT = heatmapData.reduce((sum, d) => sum + (d.metrics?.aht || 0), 0) / heatmapData.length;
+  const avgCSAT = heatmapData.reduce((sum, d) => sum + (d.metrics?.csat || 0), 0) / heatmapData.length;
+  const avgVariability = heatmapData.reduce((sum, d) => sum + (100 - (d.variability?.cv_aht || 0)), 0) / heatmapData.length;
   
   return Math.round((avgFCR + avgAHT + avgCSAT + avgVariability) / 4);
 }
@@ -545,14 +546,43 @@ function generateRoadmapFromRealData(opportunities: Opportunity[]): RoadmapIniti
  */
 function generateEconomicModelFromRealData(metrics: SkillMetrics[], costPerHour: number): EconomicModelData {
   const totalCost = metrics.reduce((sum, m) => sum + m.total_cost, 0);
-  const potentialSavings = totalCost * 0.35;
-  
+  const annualSavings = Math.round(totalCost * 0.35);
+  const initialInvestment = Math.round(totalCost * 0.1);
+  const paybackMonths = Math.ceil((initialInvestment / annualSavings) * 12);
+  const roi3yr = (((annualSavings * 3) - initialInvestment) / initialInvestment) * 100;
+
+  // NPV con tasa de descuento 10%
+  const discountRate = 0.10;
+  const npv = -initialInvestment +
+              (annualSavings / (1 + discountRate)) +
+              (annualSavings / Math.pow(1 + discountRate, 2)) +
+              (annualSavings / Math.pow(1 + discountRate, 3));
+
+  const savingsBreakdown = [
+    { category: 'Automatización de tareas', amount: annualSavings * 0.45, percentage: 45 },
+    { category: 'Eficiencia operativa', amount: annualSavings * 0.30, percentage: 30 },
+    { category: 'Mejora FCR', amount: annualSavings * 0.15, percentage: 15 },
+    { category: 'Reducción attrition', amount: annualSavings * 0.075, percentage: 7.5 },
+    { category: 'Otros', amount: annualSavings * 0.025, percentage: 2.5 },
+  ];
+
+  const costBreakdown = [
+    { category: 'Software y licencias', amount: initialInvestment * 0.43, percentage: 43 },
+    { category: 'Implementación', amount: initialInvestment * 0.29, percentage: 29 },
+    { category: 'Training y change mgmt', amount: initialInvestment * 0.18, percentage: 18 },
+    { category: 'Contingencia', amount: initialInvestment * 0.10, percentage: 10 },
+  ];
+
   return {
-    currentCost: Math.round(totalCost),
-    projectedCost: Math.round(totalCost - potentialSavings),
-    savings: Math.round(potentialSavings),
-    roi: Math.round((potentialSavings / (totalCost * 0.1)) * 100), // ROI simplificado
-    paybackPeriod: '6-9 meses'
+    currentAnnualCost: Math.round(totalCost),
+    futureAnnualCost: Math.round(totalCost - annualSavings),
+    annualSavings,
+    initialInvestment,
+    paybackMonths,
+    roi3yr: parseFloat(roi3yr.toFixed(1)),
+    npv: Math.round(npv),
+    savingsBreakdown,
+    costBreakdown
   };
 }
 
@@ -560,23 +590,59 @@ function generateEconomicModelFromRealData(metrics: SkillMetrics[], costPerHour:
  * Generar benchmark desde datos reales
  */
 function generateBenchmarkFromRealData(metrics: SkillMetrics[]): BenchmarkDataPoint[] {
-  const avgAHT = metrics.reduce((sum, m) => sum + m.aht_mean, 0) / metrics.length;
-  const avgFCR = 100 - (metrics.reduce((sum, m) => sum + m.transfer_rate, 0) / metrics.length);
-  
+  const avgAHT = metrics.reduce((sum, m) => sum + m.aht_mean, 0) / (metrics.length || 1);
+  const avgFCR = 100 - (metrics.reduce((sum, m) => sum + m.transfer_rate, 0) / (metrics.length || 1));
+  const avgCSAT = 4.3; // Default CSAT
+  const avgCPI = 3.5; // Default CPI
+
   return [
     {
-      metric: 'AHT',
-      yourValue: Math.round(avgAHT),
-      industryAverage: 420,
-      topPerformer: 300,
-      unit: 'segundos'
+      kpi: 'AHT Promedio',
+      userValue: Math.round(avgAHT),
+      userDisplay: `${Math.round(avgAHT)}s`,
+      industryValue: 420,
+      industryDisplay: `420s`,
+      percentile: Math.max(10, Math.min(90, Math.round(100 - (avgAHT / 420) * 100))),
+      p25: 380,
+      p50: 420,
+      p75: 460,
+      p90: 510
     },
     {
-      metric: 'FCR',
-      yourValue: Math.round(avgFCR),
-      industryAverage: 75,
-      topPerformer: 85,
-      unit: '%'
+      kpi: 'Tasa FCR',
+      userValue: avgFCR / 100,
+      userDisplay: `${Math.round(avgFCR)}%`,
+      industryValue: 0.72,
+      industryDisplay: `72%`,
+      percentile: Math.max(10, Math.min(90, Math.round((avgFCR / 100) * 100))),
+      p25: 0.65,
+      p50: 0.72,
+      p75: 0.82,
+      p90: 0.88
+    },
+    {
+      kpi: 'CSAT',
+      userValue: avgCSAT,
+      userDisplay: `${avgCSAT}/5`,
+      industryValue: 4.3,
+      industryDisplay: `4.3/5`,
+      percentile: 65,
+      p25: 3.8,
+      p50: 4.3,
+      p75: 4.6,
+      p90: 4.8
+    },
+    {
+      kpi: 'Coste por Interacción',
+      userValue: avgCPI,
+      userDisplay: `€${avgCPI.toFixed(2)}`,
+      industryValue: 3.5,
+      industryDisplay: `€3.50`,
+      percentile: 55,
+      p25: 2.8,
+      p50: 3.5,
+      p75: 4.2,
+      p90: 4.8
     }
   ];
 }

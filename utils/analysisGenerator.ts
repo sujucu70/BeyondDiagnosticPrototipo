@@ -139,6 +139,7 @@ const generateHourlyDistribution = (): number[] => {
 // v2.0: Calcular % fuera de horario
 const calculateOffHoursPct = (hourly_distribution: number[]): number => {
     const total = hourly_distribution.reduce((a, b) => a + b, 0);
+    if (total === 0) return 0;  // Evitar división por cero
     const off_hours = hourly_distribution.slice(0, 8).reduce((a, b) => a + b, 0) +
                       hourly_distribution.slice(19, 24).reduce((a, b) => a + b, 0);
     return off_hours / total;
@@ -146,8 +147,9 @@ const calculateOffHoursPct = (hourly_distribution: number[]): number => {
 
 // v2.0: Identificar horas pico
 const identifyPeakHours = (hourly_distribution: number[]): number[] => {
+    if (!hourly_distribution || hourly_distribution.length === 0) return [];
     const sorted = [...hourly_distribution].sort((a, b) => b - a);
-    const threshold = sorted[2];  // Top 3
+    const threshold = sorted[Math.min(2, sorted.length - 1)] || 0;  // Top 3 o máximo disponible
     return hourly_distribution
         .map((val, idx) => val >= threshold ? idx : -1)
         .filter(idx => idx !== -1);
@@ -536,7 +538,7 @@ const generateSyntheticAnalysis = (
       agenticReadiness = calculateAgenticReadinessScore(agenticInput);
   }
     
-  const heatmapData = generateHeatmapData(tier, costPerHour, avgCsat, segmentMapping);
+  const heatmapData = generateHeatmapData(costPerHour, avgCsat, segmentMapping);
     
     console.log('📊 Heatmap data generated:', {
         length: heatmapData.length,

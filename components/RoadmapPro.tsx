@@ -87,7 +87,8 @@ const RoadmapPro: React.FC<RoadmapProProps> = ({ data }) => {
         initiativeCount: 0,
       };
       const totalInvestment = data.reduce((sum, item) => sum + (item?.investment || 0), 0);
-      const totalResources = data.length > 0 ? Math.max(...data.map(item => item?.resources?.length || 0)) : 0;
+      const resourceLengths = data.map(item => item?.resources?.length || 0);
+      const totalResources = resourceLengths.length > 0 ? Math.max(0, ...resourceLengths) : 0;
       const duration = 18;
       
       return {
@@ -126,7 +127,7 @@ const RoadmapPro: React.FC<RoadmapProProps> = ({ data }) => {
           Roadmap de Transformación: 18 meses hacia Agentic Readiness Tier Gold
         </h3>
         <p className="text-sm text-slate-500">
-          Plan de Implementación en 3 olas de transformación | {data.length} iniciativas | €{(summary.totalInvestment / 1000).toFixed(0)}K inversión total
+          Plan de Implementación en 3 olas de transformación | {data.length} iniciativas | €{((summary.totalInvestment || 0) / 1000).toFixed(0)}K inversión total
         </p>
       </div>
 
@@ -139,7 +140,7 @@ const RoadmapPro: React.FC<RoadmapProProps> = ({ data }) => {
         
         <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-200">
           <div className="text-xs text-blue-700 mb-1">Inversión Total</div>
-          <div className="text-2xl font-bold text-blue-600">€{(summary.totalInvestment / 1000).toFixed(0)}K</div>
+          <div className="text-2xl font-bold text-blue-600">€{(((summary.totalInvestment || 0)) / 1000).toFixed(0)}K</div>
         </div>
         
         <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-4 rounded-lg border border-green-200">

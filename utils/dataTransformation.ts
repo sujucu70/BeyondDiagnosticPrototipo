@@ -288,22 +288,27 @@ export function generateTransformationSummary(
   agenticReadiness: SkillAgenticReadiness[]
 ): string {
   const removedCount = originalCount - cleanedCount;
-  const removedPercentage = ((removedCount / originalCount) * 100).toFixed(1);
-  
+  const removedPercentage = originalCount > 0 ? ((removedCount / originalCount) * 100).toFixed(1) : '0';
+
   const automateCount = agenticReadiness.filter(s => s.readiness_category === 'automate_now').length;
   const assistCount = agenticReadiness.filter(s => s.readiness_category === 'assist_copilot').length;
   const optimizeCount = agenticReadiness.filter(s => s.readiness_category === 'optimize_first').length;
-  
+
+  // Validar que skillsCount no sea 0 para evitar división por cero
+  const automatePercent = skillsCount > 0 ? ((automateCount/skillsCount)*100).toFixed(0) : '0';
+  const assistPercent = skillsCount > 0 ? ((assistCount/skillsCount)*100).toFixed(0) : '0';
+  const optimizePercent = skillsCount > 0 ? ((optimizeCount/skillsCount)*100).toFixed(0) : '0';
+
   return `
 📊 Resumen de Transformación:
    • Interacciones originales: ${originalCount.toLocaleString()}
    • Ruido eliminado: ${removedCount.toLocaleString()} (${removedPercentage}%)
    • Interacciones limpias: ${cleanedCount.toLocaleString()}
    • Skills únicos: ${skillsCount}
-   
+
 🎯 Agentic Readiness:
-   • 🟢 Automate Now: ${automateCount} skills (${((automateCount/skillsCount)*100).toFixed(0)}%)
-   • 🟡 Assist/Copilot: ${assistCount} skills (${((assistCount/skillsCount)*100).toFixed(0)}%)
-   • 🔴 Optimize First: ${optimizeCount} skills (${((optimizeCount/skillsCount)*100).toFixed(0)}%)
+   • 🟢 Automate Now: ${automateCount} skills (${automatePercent}%)
+   • 🟡 Assist/Copilot: ${assistCount} skills (${assistPercent}%)
+   • 🔴 Optimize First: ${optimizeCount} skills (${optimizePercent}%)
   `.trim();
 }

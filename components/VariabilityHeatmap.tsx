@@ -72,12 +72,12 @@ const VariabilityHeatmap: React.FC<VariabilityHeatmapProps> = ({ data }) => {
     const sortedByReadiness = [...data].sort((a, b) => b.automation_readiness - a.automation_readiness);
     
     const quickWins: Insight[] = sortedByReadiness
-      .filter(item => item.automation_readiness >= 80)
+      .filter(item => item.automation_readiness >= 80 && item?.variability)
       .map(item => ({
         type: 'quick_win',
         skill: item.skill,
         automation_readiness: item.automation_readiness,
-        recommendation: `CV AHT ${item.variability.cv_aht}% → Candidato ideal para automatización inmediata`
+        recommendation: `CV AHT ${item.variability?.cv_aht || 0}% → Candidato ideal para automatización inmediata`
       }));
 
     const standardize: Insight[] = sortedByReadiness
@@ -141,8 +141,8 @@ const VariabilityHeatmap: React.FC<VariabilityHeatmapProps> = ({ data }) => {
       aValue = a.automation_readiness;
       bValue = b.automation_readiness;
     } else {
-      aValue = a.variability[sortKey];
-      bValue = b.variability[sortKey];
+      aValue = a?.variability?.[sortKey] || 0;
+      bValue = b?.variability?.[sortKey] || 0;
     }
 
     if (typeof aValue === 'string' && typeof bValue === 'string') {
@@ -320,7 +320,7 @@ const VariabilityHeatmap: React.FC<VariabilityHeatmapProps> = ({ data }) => {
                     {item.skill}
                   </td>
                   {metrics.map(({ key }) => {
-                    const value = item.variability[key];
+                    const value = item?.variability?.[key] || 0;
                     return (
                       <td
                         key={key}

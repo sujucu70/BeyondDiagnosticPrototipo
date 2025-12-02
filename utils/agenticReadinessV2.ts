@@ -165,11 +165,16 @@ function calculateEstabilidadScore(
   // 1. UNIFORMIDAD DISTRIBUCIÓN HORARIA (60%)
   // Calcular entropía de Shannon
   const total = hourly_distribution.reduce((a, b) => a + b, 0);
-  const probs = hourly_distribution.map(v => v / total).filter(p => p > 0);
-  const entropy = -probs.reduce((sum, p) => sum + p * Math.log2(p), 0);
-  const max_entropy = Math.log2(hourly_distribution.length);
-  const entropy_normalized = entropy / max_entropy;
-  const score_uniformidad = entropy_normalized * 10;
+  let score_uniformidad = 0;
+  let entropy_normalized = 0;
+
+  if (total > 0) {
+    const probs = hourly_distribution.map(v => v / total).filter(p => p > 0);
+    const entropy = -probs.reduce((sum, p) => sum + p * Math.log2(p), 0);
+    const max_entropy = Math.log2(hourly_distribution.length);
+    entropy_normalized = entropy / max_entropy;
+    score_uniformidad = entropy_normalized * 10;
+  }
   
   // 2. % LLAMADAS FUERA DE HORAS (40%)
   // Más llamadas fuera de horas → Mayor necesidad agentes → Mayor score

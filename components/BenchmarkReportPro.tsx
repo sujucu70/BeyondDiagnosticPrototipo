@@ -28,9 +28,9 @@ const BenchmarkReportPro: React.FC<BenchmarkReportProProps> = ({ data }) => {
       
       // Determine top performer name based on KPI
       let topPerformerName = 'Best-in-Class';
-      if (item.kpi.includes('CSAT')) topPerformerName = 'Apple';
-      else if (item.kpi.includes('FCR')) topPerformerName = 'Amazon';
-      else if (item.kpi.includes('AHT')) topPerformerName = 'Zappos';
+      if (item?.kpi?.includes('CSAT')) topPerformerName = 'Apple';
+      else if (item?.kpi?.includes('FCR')) topPerformerName = 'Amazon';
+      else if (item?.kpi?.includes('AHT')) topPerformerName = 'Zappos';
       
       return {
         ...item,
@@ -45,6 +45,7 @@ const BenchmarkReportPro: React.FC<BenchmarkReportProProps> = ({ data }) => {
 
   // Calculate overall positioning
   const overallPositioning = useMemo(() => {
+    if (!extendedData || extendedData.length === 0) return 50;
     const avgPercentile = extendedData.reduce((sum, item) => sum + item.percentile, 0) / extendedData.length;
     return Math.round(avgPercentile);
   }, [extendedData]);
@@ -71,7 +72,7 @@ const BenchmarkReportPro: React.FC<BenchmarkReportProProps> = ({ data }) => {
       .slice(0, 3)
       .map(item => {
         const gapToP75 = item.p75 - item.userValue;
-        const gapPercent = ((gapToP75 / item.userValue) * 100).toFixed(1);
+        const gapPercent = item.userValue !== 0 ? ((gapToP75 / item.userValue) * 100).toFixed(1) : '0';
         
         return {
           kpi: item.kpi,
@@ -169,12 +170,13 @@ const BenchmarkReportPro: React.FC<BenchmarkReportProProps> = ({ data }) => {
               </tr>
             </thead>
             <tbody>
-              {extendedData.map((item, index) => {
-                const isLowerBetter = item.kpi.toLowerCase().includes('aht') || item.kpi.toLowerCase().includes('coste');
+              {extendedData && extendedData.length > 0 ? extendedData.map((item, index) => {
+                const kpiName = item?.kpi || 'Unknown';
+                const isLowerBetter = kpiName.toLowerCase().includes('aht') || kpiName.toLowerCase().includes('coste');
                 const isAbove = item.userValue > item.industryValue;
                 const isPositive = isLowerBetter ? !isAbove : isAbove;
                 const gapToP75 = item.p75 - item.userValue;
-                const gapPercent = ((gapToP75 / item.userValue) * 100).toFixed(1);
+                const gapPercent = item.userValue !== 0 ? ((gapToP75 / item.userValue) * 100).toFixed(1) : '0';
 
                 return (
                   <motion.tr
@@ -205,7 +207,14 @@ const BenchmarkReportPro: React.FC<BenchmarkReportProProps> = ({ data }) => {
                     </td>
                   </motion.tr>
                 );
-              })}
+              })
+              : (
+                <tr>
+                  <td colSpan={9} className="p-4 text-center text-gray-500">
+                    Sin datos de benchmark disponibles
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

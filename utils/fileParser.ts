@@ -59,9 +59,9 @@ export async function parseCSV(file: File): Promise<RawInteraction[]> {
         datetime_start: row.datetime_start,
         queue_skill: row.queue_skill,
         channel: row.channel,
-        duration_talk: parseFloat(row.duration_talk) || 0,
-        hold_time: parseFloat(row.hold_time) || 0,
-        wrap_up_time: parseFloat(row.wrap_up_time) || 0,
+        duration_talk: isNaN(parseFloat(row.duration_talk)) ? 0 : parseFloat(row.duration_talk),
+        hold_time: isNaN(parseFloat(row.hold_time)) ? 0 : parseFloat(row.hold_time),
+        wrap_up_time: isNaN(parseFloat(row.wrap_up_time)) ? 0 : parseFloat(row.wrap_up_time),
         agent_id: row.agent_id,
         transfer_flag: row.transfer_flag?.toLowerCase() === 'true' || row.transfer_flag === '1',
         caller_id: row.caller_id || undefined
@@ -111,14 +111,22 @@ export async function parseExcel(file: File): Promise<RawInteraction[]> {
           const row: any = jsonData[i];
           
           try {
+            const durationStr = row.duration_talk || row.Duration_Talk || row['Duration Talk'] || '0';
+            const holdStr = row.hold_time || row.Hold_Time || row['Hold Time'] || '0';
+            const wrapStr = row.wrap_up_time || row.Wrap_Up_Time || row['Wrap Up Time'] || '0';
+
+            const durationTalkVal = isNaN(parseFloat(durationStr)) ? 0 : parseFloat(durationStr);
+            const holdTimeVal = isNaN(parseFloat(holdStr)) ? 0 : parseFloat(holdStr);
+            const wrapUpTimeVal = isNaN(parseFloat(wrapStr)) ? 0 : parseFloat(wrapStr);
+
             const interaction: RawInteraction = {
               interaction_id: String(row.interaction_id || row.Interaction_ID || row['Interaction ID'] || ''),
               datetime_start: String(row.datetime_start || row.Datetime_Start || row['Datetime Start'] || row['Fecha/Hora de apertura'] || ''),
               queue_skill: String(row.queue_skill || row.Queue_Skill || row['Queue Skill'] || row.Subtipo || row.Tipo || ''),
               channel: String(row.channel || row.Channel || row['Origen del caso'] || 'Unknown'),
-              duration_talk: parseFloat(row.duration_talk || row.Duration_Talk || row['Duration Talk'] || 0),
-              hold_time: parseFloat(row.hold_time || row.Hold_Time || row['Hold Time'] || 0),
-              wrap_up_time: parseFloat(row.wrap_up_time || row.Wrap_Up_Time || row['Wrap Up Time'] || 0),
+              duration_talk: isNaN(durationTalkVal) ? 0 : durationTalkVal,
+              hold_time: isNaN(holdTimeVal) ? 0 : holdTimeVal,
+              wrap_up_time: isNaN(wrapUpTimeVal) ? 0 : wrapUpTimeVal,
               agent_id: String(row.agent_id || row.Agent_ID || row['Agent ID'] || row['Propietario del caso'] || 'Unknown'),
               transfer_flag: Boolean(row.transfer_flag || row.Transfer_Flag || row['Transfer Flag'] || false),
               caller_id: row.caller_id || row.Caller_ID || row['Caller ID'] || undefined

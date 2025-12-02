@@ -237,7 +237,7 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
 
         {/* 5. DISTRIBUCIÓN HORARIA (si disponible) */}
         {(() => {
-          const volumetryDim = analysisData.dimensions.find(d => d.name === 'volumetry_distribution');
+          const volumetryDim = analysisData?.dimensions?.find(d => d.name === 'volumetry_distribution');
           const distData = volumetryDim?.distribution_data;
           
           if (distData && distData.hourly && distData.hourly.length > 0) {

@@ -23,18 +23,19 @@ const OpportunityMatrixPro: React.FC<OpportunityMatrixProProps> = ({ data, heatm
   const [selectedOpportunity, setSelectedOpportunity] = useState<Opportunity | null>(null);
   const [hoveredOpportunity, setHoveredOpportunity] = useState<string | null>(null);
 
-  const maxSavings = Math.max(...data.map(d => d.savings), 1);
+  const maxSavings = data && data.length > 0 ? Math.max(...data.map(d => d.savings || 0), 1) : 1;
 
   // v2.0: Ajustar factibilidad con automation readiness del heatmap
   const adjustFeasibilityWithReadiness = (opp: Opportunity): number => {
     if (!heatmapData) return opp.feasibility;
-    
+
     // Buscar skill relacionada en heatmap
     const relatedSkill = heatmapData.find(h => {
       if (!h.skill || !opp.name) return false;
       const skillLower = h.skill.toLowerCase();
       const oppNameLower = opp.name.toLowerCase();
-      return oppNameLower.includes(skillLower) || skillLower.includes(oppNameLower.split(' ')[0]);
+      const firstWord = oppNameLower.split(' ')[0] || '';  // Validar que existe
+      return oppNameLower.includes(skillLower) || (firstWord && skillLower.includes(firstWord));
     });
     
     if (!relatedSkill) return opp.feasibility;

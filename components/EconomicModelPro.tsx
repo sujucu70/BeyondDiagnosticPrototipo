@@ -32,21 +32,23 @@ const EconomicModelPro: React.FC<EconomicModelProProps> = ({ data }) => {
   // Waterfall data (quarterly cash flow)
   const waterfallData = useMemo(() => {
     try {
-    const quarters = 8; // 2 years
-    const quarterlyData = [];
-    let cumulative = -initialInvestment;
+      const safeInitialInvestment = initialInvestment || 0;
+      const safeAnnualSavings = annualSavings || 0;
+      const quarters = 8; // 2 years
+      const quarterlyData = [];
+      let cumulative = -safeInitialInvestment;
     
-    // Q0: Initial investment
-    quarterlyData.push({
-      quarter: 'Inv',
-      value: -initialInvestment,
-      cumulative: cumulative,
-      isNegative: true,
-      label: `-€${(initialInvestment / 1000).toFixed(0)}K`,
-    });
+      // Q0: Initial investment
+      quarterlyData.push({
+        quarter: 'Inv',
+        value: -safeInitialInvestment,
+        cumulative: cumulative,
+        isNegative: true,
+        label: `-€${(safeInitialInvestment / 1000).toFixed(0)}K`,
+      });
 
-    // Q1-Q8: Quarterly savings
-    const quarterlySavings = annualSavings / 4;
+      // Q1-Q8: Quarterly savings
+      const quarterlySavings = safeAnnualSavings / 4;
     for (let i = 1; i <= quarters; i++) {
       cumulative += quarterlySavings;
       const isBreakeven = cumulative >= 0 && (cumulative - quarterlySavings) < 0;
@@ -88,7 +90,7 @@ const EconomicModelPro: React.FC<EconomicModelProProps> = ({ data }) => {
     {
       scenario: 'Base Case',
       annualSavings: safeAnnualSavings,
-      roi3yr: safeRoi3yr.toFixed(1),
+      roi3yr: typeof safeRoi3yr === 'number' ? safeRoi3yr.toFixed(1) : '0',
       payback: safePaybackMonths,
       color: 'text-blue-600',
       bgColor: 'bg-blue-50',
@@ -112,8 +114,8 @@ const EconomicModelPro: React.FC<EconomicModelProProps> = ({ data }) => {
   const alternatives = useMemo(() => {
     try {
       const safeRoi3yr = roi3yr || 0;
-      const safeInitialInvestment = initialInvestment || 0;
-      const safeAnnualSavings = annualSavings || 0;
+      const safeInitialInvestment = initialInvestment || 50000; // Default investment
+      const safeAnnualSavings = annualSavings || 150000; // Default savings
       return [
     {
       option: 'Do Nothing',
@@ -126,8 +128,8 @@ const EconomicModelPro: React.FC<EconomicModelProProps> = ({ data }) => {
     },
     {
       option: 'Solución Propuesta',
-      investment: initialInvestment,
-      savings3yr: annualSavings * 3,
+      investment: safeInitialInvestment || 0,
+      savings3yr: (safeAnnualSavings || 0) * 3,
       roi: `${safeRoi3yr.toFixed(1)}x`,
       risk: 'Medio',
       riskColor: 'text-amber-600',
@@ -174,10 +176,10 @@ const EconomicModelPro: React.FC<EconomicModelProProps> = ({ data }) => {
       {/* Header with Dynamic Title */}
       <div className="mb-6">
         <h3 className="font-bold text-2xl text-slate-800 mb-2">
-          Business Case: €{(annualSavings / 1000).toFixed(0)}K en ahorros anuales con payback de {paybackMonths} meses y ROI de {roi3yr.toFixed(1)}x
+          Business Case: €{((annualSavings || 0) / 1000).toFixed(0)}K en ahorros anuales con payback de {paybackMonths || 0} meses y ROI de {(typeof roi3yr === 'number' ? roi3yr : 0).toFixed(1)}x
         </h3>
         <p className="text-base text-slate-700 font-medium leading-relaxed mb-1">
-          Inversión de €{(initialInvestment / 1000).toFixed(0)}K genera retorno de €{((annualSavings * 3) / 1000).toFixed(0)}K en 3 años
+          Inversión de €{((initialInvestment || 0) / 1000).toFixed(0)}K genera retorno de €{(((annualSavings || 0) * 3) / 1000).toFixed(0)}K en 3 años
         </p>
         <p className="text-sm text-slate-500">
           Análisis financiero completo | NPV: €{(financialMetrics.npv / 1000).toFixed(0)}K | IRR: {financialMetrics.irr}%
@@ -290,7 +292,7 @@ const EconomicModelPro: React.FC<EconomicModelProProps> = ({ data }) => {
         >
           <h4 className="font-bold text-lg text-green-800 mb-4">Ahorros Anuales (€{(annualSavings / 1000).toFixed(0)}K)</h4>
           <div className="space-y-3">
-            {savingsBreakdown.map((item, index) => (
+            {savingsBreakdown && savingsBreakdown.length > 0 ? savingsBreakdown.map((item, index) => (
               <div key={item.category}>
                 <div className="flex items-center justify-between mb-2">
                   <span className="font-medium text-green-700 text-sm">{item.category}</span>
@@ -309,7 +311,12 @@ const EconomicModelPro: React.FC<EconomicModelProProps> = ({ data }) => {
                   </div>
                 </div>
               </div>
-            ))}
+            ))
+            : (
+              <div className="text-center py-4 text-gray-500">
+                <p className="text-sm">No hay datos de ahorros disponibles</p>
+              </div>
+            )}
           </div>
         </motion.div>
       </div>
@@ -423,7 +430,7 @@ const EconomicModelPro: React.FC<EconomicModelProProps> = ({ data }) => {
               </tr>
             </thead>
             <tbody>
-              {alternatives.map((alt, index) => (
+              {alternatives && alternatives.length > 0 ? alternatives.map((alt, index) => (
                 <motion.tr
                   key={alt.option}
                   initial={{ opacity: 0, x: -10 }}
@@ -433,10 +440,10 @@ const EconomicModelPro: React.FC<EconomicModelProProps> = ({ data }) => {
                 >
                   <td className="p-3 font-semibold">{alt.option}</td>
                   <td className="p-3 text-center">
-                    €{alt.investment.toLocaleString('es-ES')}
+                    €{(alt.investment || 0).toLocaleString('es-ES')}
                   </td>
                   <td className="p-3 text-center font-bold text-green-600">
-                    €{alt.savings3yr.toLocaleString('es-ES')}
+                    €{(alt.savings3yr || 0).toLocaleString('es-ES')}
                   </td>
                   <td className="p-3 text-center font-bold text-blue-600">
                     {alt.roi}
@@ -453,7 +460,14 @@ const EconomicModelPro: React.FC<EconomicModelProProps> = ({ data }) => {
                     )}
                   </td>
                 </motion.tr>
-              ))}
+              ))
+              : (
+                <tr>
+                  <td colSpan={6} className="p-4 text-center text-gray-500">
+                    Sin datos de alternativas disponibles
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
