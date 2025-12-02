@@ -653,16 +653,17 @@ const generateSyntheticAnalysis = (
     dimensions,
     heatmapData,
     agenticReadiness,
-    findings: [...new Set(Array.from({ length: 3 }, () => randomFromList(KEY_FINDINGS)))].map((text, i) => ({
-      type: i === 0 ? 'warning' as const : 'info' as const,
-      title: text.split(':')[0] || 'Hallazgo',
-      description: text
+    findings: [...new Set(Array.from({ length: 3 }, () => randomFromList(KEY_FINDINGS)))].map((finding, i) => ({
+      type: finding.type || (i === 0 ? 'warning' as const : 'info' as const),
+      title: finding.title || 'Hallazgo',
+      description: finding.description || finding.text
     })),
-    recommendations: [...new Set(Array.from({ length: 3 }, () => randomFromList(RECOMMENDATIONS)))].map((text, i) => ({
-      priority: i === 0 ? 'high' as const : 'medium' as const,
-      title: text.split(':')[0] || 'Recomendación',
-      description: text,
-      impact: 'Mejora estimada del 20-30%'
+    recommendations: [...new Set(Array.from({ length: 3 }, () => randomFromList(RECOMMENDATIONS)))].map((rec, i) => ({
+      priority: rec.priority || (i === 0 ? 'high' as const : 'medium' as const),
+      title: rec.title || 'Recomendación',
+      description: rec.description || rec.text,
+      impact: rec.impact || 'Mejora estimada del 20-30%',
+      timeline: rec.timeline || '1-2 semanas'
     })),
     opportunities: generateOpportunityMatrixData(),
     roadmap: generateRoadmapData(),
