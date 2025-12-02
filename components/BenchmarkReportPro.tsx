@@ -324,8 +324,17 @@ const BenchmarkReportPro: React.FC<BenchmarkReportProProps> = ({ data }) => {
         notes="Benchmarks actualizados trimestralmente | Próxima actualización: Abril 2025 | Variabilidad por mix de canales y complejidad de productos ajustada por volumen | Gap vs P75 indica oportunidad de mejora para alcanzar cuartil superior"
         lastUpdated="Enero 2025"
       />
-    </div>
-  );
+      </div>
+    );
+  } catch (error) {
+    console.error('❌ CRITICAL ERROR in BenchmarkReportPro render:', error);
+    return (
+      <div className="bg-red-50 border-2 border-red-200 rounded-lg p-6">
+        <h3 className="text-lg font-semibold text-red-900 mb-2">❌ Error en Benchmark</h3>
+        <p className="text-red-800">No se pudo renderizar el componente. Error: {String(error)}</p>
+      </div>
+    );
+  }
 };
 
 // Helper Components
@@ -348,17 +357,8 @@ const PercentileBar: React.FC<{ percentile: number }> = ({ percentile }) => {
       <div className="absolute inset-0 flex items-center justify-center">
         <span className="text-xs font-bold text-white drop-shadow">P{percentile}</span>
       </div>
-      </div>
-    );
-  } catch (error) {
-    console.error('❌ CRITICAL ERROR in BenchmarkReportPro render:', error);
-    return (
-      <div className="bg-red-50 border-2 border-red-200 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-red-900 mb-2">❌ Error en Benchmark</h3>
-        <p className="text-red-800">No se pudo renderizar el componente. Error: {String(error)}</p>
-      </div>
-    );
-  }
+    </div>
+  );
 };
 
 // Helper Functions
