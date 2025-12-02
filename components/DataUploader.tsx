@@ -89,7 +89,6 @@ const DataUploader: React.FC<DataUploaderProps> = ({ selectedTier, onAnalysisRea
     setStatus('generating');
     setTimeout(() => {
       const csvData = generateSyntheticCsv(selectedTier);
-      console.log(`Generated ${csvData.split('\n').length} rows of synthetic data for tier: ${selectedTier}`);
       handleDataReady('Datos Sintéticos Generados!');
     }, 2000);
   };

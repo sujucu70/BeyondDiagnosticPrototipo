@@ -106,22 +106,119 @@ const DIMENSIONS_CONTENT = {
 };
 
 const KEY_FINDINGS: Finding[] = [
-    { text: "El canal de voz presenta un AHT un 35% superior al del chat, pero una tasa de resolución un 15% mayor.", dimensionId: 'performance' },
-    { text: "Un 22% de las transferencias desde 'Soporte Técnico N1' hacia 'Facturación' son incorrectas.", dimensionId: 'efficiency' },
-    { text: "El pico de demanda de los lunes por la mañana provoca una caída del Nivel de Servicio al 65%.", dimensionId: 'volumetry_distribution' },
-    { text: "El 28% de las interacciones ocurren fuera del horario laboral estándar (8-18h).", dimensionId: 'volumetry_distribution' },
-    { text: "Las consultas sobre 'estado del pedido' representan el 30% de las interacciones y tienen alta repetitividad.", dimensionId: 'volumetry_distribution' },
-    { text: "Baja puntuación de CSAT en interacciones relacionadas con problemas de facturación.", dimensionId: 'satisfaction' },
-    { text: "La variabilidad de AHT (CV=45%) sugiere procesos poco estandarizados.", dimensionId: 'performance' },
+    {
+        text: "El canal de voz presenta un AHT un 35% superior al del chat, pero una tasa de resolución un 15% mayor.",
+        dimensionId: 'performance',
+        type: 'info',
+        title: 'Diferencia de Canales: Voz vs Chat',
+        description: 'Análisis comparativo entre canales muestra trade-off entre velocidad y resolución.',
+        impact: 'medium'
+    },
+    {
+        text: "Un 22% de las transferencias desde 'Soporte Técnico N1' hacia 'Facturación' son incorrectas.",
+        dimensionId: 'efficiency',
+        type: 'warning',
+        title: 'Enrutamiento Incorrecto',
+        description: 'Existe un problema de routing que genera ineficiencias y experiencia pobre del cliente.',
+        impact: 'high'
+    },
+    {
+        text: "El pico de demanda de los lunes por la mañana provoca una caída del Nivel de Servicio al 65%.",
+        dimensionId: 'volumetry_distribution',
+        type: 'critical',
+        title: 'Crisis de Capacidad (Lunes por la mañana)',
+        description: 'Los lunes 8-11h generan picos impredecibles que agotan la capacidad disponible.',
+        impact: 'high'
+    },
+    {
+        text: "El 28% de las interacciones ocurren fuera del horario laboral estándar (8-18h).",
+        dimensionId: 'volumetry_distribution',
+        type: 'info',
+        title: 'Demanda Fuera de Horario',
+        description: 'Casi 1 de 3 interacciones se produce fuera del horario laboral, requiriendo cobertura extendida.',
+        impact: 'medium'
+    },
+    {
+        text: "Las consultas sobre 'estado del pedido' representan el 30% de las interacciones y tienen alta repetitividad.",
+        dimensionId: 'volumetry_distribution',
+        type: 'info',
+        title: 'Oportunidad de Automatización: Estado de Pedido',
+        description: 'Volumen significativo en consultas altamente repetitivas y automatizables.',
+        impact: 'high'
+    },
+    {
+        text: "Baja puntuación de CSAT en interacciones relacionadas con problemas de facturación.",
+        dimensionId: 'satisfaction',
+        type: 'warning',
+        title: 'Satisfacción Baja en Facturación',
+        description: 'El equipo de facturación tiene desempeño por debajo de la media en satisfacción del cliente.',
+        impact: 'high'
+    },
+    {
+        text: "La variabilidad de AHT (CV=45%) sugiere procesos poco estandarizados.",
+        dimensionId: 'performance',
+        type: 'warning',
+        title: 'Inconsistencia en Procesos',
+        description: 'Alta variabilidad indica falta de estandarización y diferencias significativas entre agentes.',
+        impact: 'medium'
+    },
 ];
 
 const RECOMMENDATIONS: Recommendation[] = [
-    { text: "Implementar un programa de formación específico para agentes de Facturación sobre los nuevos planes.", dimensionId: 'efficiency', priority: 2 },
-    { text: "Desarrollar un bot de estado de pedido para WhatsApp para desviar el 30% de las consultas.", dimensionId: 'volumetry_distribution', priority: 1 },
-    { text: "Revisar la planificación de personal (WFM) para los lunes, añadiendo recursos flexibles.", dimensionId: 'volumetry_distribution', priority: 2 },
-    { text: "Crear una Knowledge Base más robusta y accesible para reducir el tiempo en espera.", dimensionId: 'performance', priority: 1 },
-    { text: "Implementar cobertura 24/7 con agentes virtuales para el 28% de interacciones fuera de horario.", dimensionId: 'volumetry_distribution', priority: 1 },
-    { text: "Realizar un análisis de causa raíz sobre las quejas de facturación para mejorar procesos.", dimensionId: 'satisfaction', priority: 3 },
+    {
+        text: "Implementar un programa de formación específico para agentes de Facturación sobre los nuevos planes.",
+        dimensionId: 'efficiency',
+        priority: 'high',
+        title: 'Formación en Facturación',
+        description: 'Capacitación intensiva en productos, políticas y procedimientos de facturación.',
+        impact: 'Mejora estimada de satisfacción: 15-25%',
+        timeline: '2-3 semanas'
+    },
+    {
+        text: "Desarrollar un bot de estado de pedido para WhatsApp para desviar el 30% de las consultas.",
+        dimensionId: 'volumetry_distribution',
+        priority: 'high',
+        title: 'Bot Automatizado de Seguimiento de Pedidos',
+        description: 'Implementar ChatBot en WhatsApp para responder consultas de estado de pedido automáticamente.',
+        impact: 'Reducción de volumen: 20-30%, Ahorro anual: €40-60K',
+        timeline: '1-2 meses'
+    },
+    {
+        text: "Revisar la planificación de personal (WFM) para los lunes, añadiendo recursos flexibles.",
+        dimensionId: 'volumetry_distribution',
+        priority: 'high',
+        title: 'Ajuste de Plantilla (WFM)',
+        description: 'Reposicionar agentes y añadir recursos part-time para los lunes 8-11h.',
+        impact: 'Mejora del NSL: +15-20%, Coste adicional: €5-8K/mes',
+        timeline: '1 mes'
+    },
+    {
+        text: "Crear una Knowledge Base más robusta y accesible para reducir el tiempo en espera.",
+        dimensionId: 'performance',
+        priority: 'high',
+        title: 'Mejora de Acceso a Información',
+        description: 'Desarrollar una KB centralizada integrada en el sistema de agentes con búsqueda inteligente.',
+        impact: 'Reducción de AHT: 8-12%, Mejora de FCR: 5-10%',
+        timeline: '6-8 semanas'
+    },
+    {
+        text: "Implementar cobertura 24/7 con agentes virtuales para el 28% de interacciones fuera de horario.",
+        dimensionId: 'volumetry_distribution',
+        priority: 'medium',
+        title: 'Cobertura 24/7 con IA',
+        description: 'Desplegar agentes virtuales para gestionar el 28% de interacciones nocturnas.',
+        impact: 'Captura de demanda: 20-25%, Coste incremental: €15-20K/mes',
+        timeline: '2-3 meses'
+    },
+    {
+        text: "Realizar un análisis de causa raíz sobre las quejas de facturación para mejorar procesos.",
+        dimensionId: 'satisfaction',
+        priority: 'medium',
+        title: 'Análisis de Causa Raíz (Facturación)',
+        description: 'Investigar las 50 últimas quejas de facturación para identificar patrones y causas.',
+        impact: 'Identificación de mejoras de proceso con ROI potencial de €20-50K',
+        timeline: '2-3 semanas'
+    },
 ];
 
 // v2.0: Generar distribución horaria realista

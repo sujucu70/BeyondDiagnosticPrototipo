@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import type { AgenticReadinessResult } from '../types';
-import { CheckCircle2, TrendingUp, Database, Brain, Clock, DollarSign } from 'lucide-react';
+import { CheckCircle2, TrendingUp, Database, Brain, Clock, DollarSign, Zap, AlertCircle, Target } from 'lucide-react';
+import BadgePill from './BadgePill';
 
 interface AgenticReadinessBreakdownProps {
   agenticReadiness: AgenticReadinessResult;
@@ -195,14 +196,127 @@ export function AgenticReadinessBreakdown({ agenticReadiness }: AgenticReadiness
         })}
       </div>
       
+      {/* Action Recommendation */}
+      <div className="mt-8 space-y-4">
+        <div className="border-t border-slate-200 pt-6">
+          <div className="flex items-start gap-4 mb-4">
+            <Target size={24} className="text-blue-600 flex-shrink-0 mt-1" />
+            <div>
+              <h3 className="text-lg font-bold text-slate-900 mb-2">
+                Recomendación de Acción
+              </h3>
+              <p className="text-slate-700 mb-3">
+                {score >= 8
+                  ? 'Este proceso es un candidato excelente para automatización completa. La alta predictibilidad y baja complejidad lo hacen ideal para un bot o IVR.'
+                  : score >= 5
+                  ? 'Este proceso se beneficiará de una solución híbrida donde la IA asiste a los agentes humanos, mejorando velocidad y consistencia.'
+                  : 'Este proceso requiere optimización operativa antes de automatización. Enfócate en estandarizar y simplificar.'}
+              </p>
+
+              <div className="space-y-3">
+                <div>
+                  <span className="text-sm font-semibold text-slate-600 block mb-2">Timeline Estimado:</span>
+                  <span className="text-base text-slate-900">
+                    {score >= 8 ? '1-2 meses' : score >= 5 ? '2-3 meses' : '4-6 semanas de optimización'}
+                  </span>
+                </div>
+
+                <div>
+                  <span className="text-sm font-semibold text-slate-600 block mb-2">Tecnologías Sugeridas:</span>
+                  <div className="flex flex-wrap gap-2">
+                    {score >= 8 ? (
+                      <>
+                        <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
+                          Chatbot / IVR
+                        </span>
+                        <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
+                          RPA
+                        </span>
+                      </>
+                    ) : score >= 5 ? (
+                      <>
+                        <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+                          Copilot IA
+                        </span>
+                        <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+                          Asistencia en Tiempo Real
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-medium">
+                          Mejora de Procesos
+                        </span>
+                        <span className="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-medium">
+                          Estandarización
+                        </span>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <span className="text-sm font-semibold text-slate-600 block mb-2">Impacto Estimado:</span>
+                  <div className="space-y-1 text-sm text-slate-700">
+                    {score >= 8 ? (
+                      <>
+                        <div className="flex items-center gap-2"><span className="text-green-600">✓</span> Reducción volumen: 30-50%</div>
+                        <div className="flex items-center gap-2"><span className="text-green-600">✓</span> Mejora de AHT: 40-60%</div>
+                        <div className="flex items-center gap-2"><span className="text-green-600">✓</span> Ahorro anual: €80-150K</div>
+                      </>
+                    ) : score >= 5 ? (
+                      <>
+                        <div className="flex items-center gap-2"><span className="text-blue-600">✓</span> Mejora de velocidad: 20-30%</div>
+                        <div className="flex items-center gap-2"><span className="text-blue-600">✓</span> Mejora de consistencia: 25-40%</div>
+                        <div className="flex items-center gap-2"><span className="text-blue-600">✓</span> Ahorro anual: €30-60K</div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="flex items-center gap-2"><span className="text-amber-600">→</span> Mejora de eficiencia: 10-20%</div>
+                        <div className="flex items-center gap-2"><span className="text-amber-600">→</span> Base para automatización futura</div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* CTA Button */}
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className={`w-full py-3 px-4 rounded-lg font-bold flex items-center justify-center gap-2 text-white transition-colors ${
+              score >= 8
+                ? 'bg-green-600 hover:bg-green-700'
+                : score >= 5
+                ? 'bg-blue-600 hover:bg-blue-700'
+                : 'bg-amber-600 hover:bg-amber-700'
+            }`}
+          >
+            <Zap size={18} />
+            {score >= 8
+              ? 'Ver Iniciativa de Automatización'
+              : score >= 5
+              ? 'Explorar Solución de Asistencia'
+              : 'Iniciar Plan de Optimización'}
+          </motion.button>
+        </div>
+      </div>
+
       {/* Footer note */}
-      <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-        <p className="text-sm text-blue-900">
-          <strong>Nota:</strong> El Agentic Readiness Score evalúa el potencial de automatización 
-          basándose en repetitividad, predictibilidad, estructuración, complejidad, estabilidad y ROI. 
-          Scores ≥8 son candidatos ideales para automatización completa (Automate), 5-7 para asistencia 
-          agéntica (Assist), y 3-4 para augmentación humana (Augment).
-        </p>
+      <div className="mt-6 p-4 bg-slate-50 rounded-lg border border-slate-200">
+        <div className="flex gap-2 items-start">
+          <AlertCircle size={16} className="text-slate-600 flex-shrink-0 mt-0.5" />
+          <p className="text-xs text-slate-600">
+            <strong>¿Cómo interpretar el score?</strong> El Agentic Readiness Score (0-10) evalúa automatizabilidad
+            considerando: predictibilidad del proceso, complejidad operacional, volumen de repeticiones y potencial ROI.
+            <strong className="block mt-1">Guía de interpretación:</strong>
+            <span className="block">8.0-10.0 = Automatizar Ahora (proceso ideal)</span>
+            <span className="block">5.0-7.9 = Asistencia con IA (copilot para agentes)</span>
+            <span className="block">0-4.9 = Optimizar Primero (mejorar antes de automatizar)</span>
+          </p>
+        </div>
       </div>
     </motion.div>
   );

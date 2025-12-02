@@ -205,12 +205,20 @@ export interface RoadmapInitiative {
 export interface Finding {
   text: string;
   dimensionId: string;
+  type?: 'warning' | 'info' | 'critical';  // Tipo de hallazgo
+  title?: string;  // Título del hallazgo
+  description?: string;  // Descripción detallada
+  impact?: 'high' | 'medium' | 'low';  // Impacto estimado
 }
 
 export interface Recommendation {
   text: string;
   dimensionId: string;
-  priority?: number;  // v2.0: Prioridad 1-3
+  priority?: 'high' | 'medium' | 'low';  // v2.0: Prioridad
+  title?: string;  // Título de la recomendación
+  description?: string;  // Descripción detallada
+  impact?: string;  // Impacto estimado (e.g., "Mejora del 20-30%")
+  timeline?: string;  // Timeline estimado (e.g., "1-3 meses")
 }
 
 export interface EconomicModelData {

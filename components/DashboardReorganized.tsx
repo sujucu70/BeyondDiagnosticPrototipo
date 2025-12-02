@@ -2,7 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { AnalysisData, Kpi } from '../types';
 import { TIERS } from '../constants';
-import { ArrowLeft, BarChart2, Lightbulb, Target } from 'lucide-react';
+import { ArrowLeft, BarChart2, Lightbulb, Target, Phone, Smile } from 'lucide-react';
+import BadgePill from './BadgePill';
 
 import HealthScoreGaugeEnhanced from './HealthScoreGaugeEnhanced';
 import DimensionCard from './DimensionCard';
@@ -62,16 +63,6 @@ const SectionDivider: React.FC<{ icon: React.ReactNode; title: string }> = ({ ic
 );
 
 const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisData, onBack }) => {
-  console.log('📊 DashboardReorganized received data:', {
-    tier: analysisData.tier,
-    heatmapDataLength: analysisData.heatmapData?.length,
-    heatmapFirstItem: analysisData.heatmapData?.[0],
-    findingsLength: analysisData.findings?.length,
-    recommendationsLength: analysisData.recommendations?.length,
-    dimensionsLength: analysisData.dimensions?.length,
-    summaryKpisLength: analysisData.summaryKpis?.length
-  });
-  
   const tierInfo = TIERS[analysisData.tier || 'gold'];  // Default to gold if tier is undefined
 
   return (
@@ -111,10 +102,10 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
             animate={{ opacity: 1, y: 0 }}
             className="bg-gradient-to-br from-[#5669D0] via-[#6D84E3] to-[#8A9EE8] rounded-2xl p-8 md:p-10 shadow-2xl"
           >
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
               {/* Health Score */}
               <div className="lg:col-span-1">
-                <HealthScoreGaugeEnhanced 
+                <HealthScoreGaugeEnhanced
                   score={analysisData.overallHealthScore}
                   previousScore={analysisData.overallHealthScore - 7}
                   industryAverage={65}
@@ -122,82 +113,165 @@ const DashboardReorganized: React.FC<DashboardReorganizedProps> = ({ analysisDat
                 />
               </div>
 
-              {/* KPIs Grid */}
-              <div className="lg:col-span-2">
-                <h2 className="text-white text-2xl font-bold mb-6">Métricas Clave</h2>
-                <div className="grid grid-cols-2 gap-4">
-                  {(analysisData.summaryKpis || []).map((kpi, index) => (
-                    <KpiCard 
-                      key={kpi.label} 
-                      {...kpi}
-                      index={index}
-                    />
-                  ))}
+              {/* KPIs Agrupadas por Categoría */}
+              <div className="lg:col-span-3">
+                {/* Grupo 1: Métricas de Contacto */}
+                <div className="mb-8">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Phone size={18} className="text-white" />
+                    <h3 className="text-white text-lg font-bold">Métricas de Contacto</h3>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    {(analysisData.summaryKpis || []).slice(0, 2).map((kpi, index) => (
+                      <KpiCard
+                        key={kpi.label}
+                        {...kpi}
+                        index={index}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Grupo 2: Métricas de Satisfacción */}
+                <div>
+                  <div className="flex items-center gap-2 mb-4">
+                    <Smile size={18} className="text-white" />
+                    <h3 className="text-white text-lg font-bold">Métricas de Satisfacción</h3>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    {(analysisData.summaryKpis || []).slice(2, 4).map((kpi, index) => (
+                      <KpiCard
+                        key={kpi.label}
+                        {...kpi}
+                        index={index + 2}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
           </motion.div>
         </section>
 
-        {/* 2. INSIGHTS SECTION */}
+        {/* 2. INSIGHTS SECTION - FINDINGS */}
         <section>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="grid grid-cols-1 lg:grid-cols-2 gap-6"
           >
-            {/* Principales Hallazgos */}
-            <div className="bg-amber-50 border-2 border-amber-200 rounded-xl p-6">
-              <h3 className="font-bold text-xl text-amber-900 mb-4 flex items-center gap-2">
-                <Lightbulb size={24} className="text-amber-600" />
+            <div className="bg-amber-50 border-2 border-amber-200 rounded-xl p-8">
+              <h3 className="font-bold text-2xl text-amber-900 mb-6 flex items-center gap-2">
+                <Lightbulb size={28} className="text-amber-600" />
                 Principales Hallazgos
               </h3>
-              <ul className="space-y-3 text-sm text-amber-900">
+              <div className="space-y-5">
                 {(analysisData.findings || []).map((finding, i) => (
-                  <motion.li
+                  <motion.div
                     key={i}
                     initial={{ opacity: 0, x: -10 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.1 }}
-                    className="flex gap-2"
+                    className="bg-white rounded-lg p-5 border border-amber-100 hover:shadow-md transition-shadow"
                   >
-                    <span className="text-amber-600 mt-1 font-bold">•</span>
-                    <span>{finding.text}</span>
-                  </motion.li>
+                    <div className="flex items-start justify-between gap-4 mb-3">
+                      <div>
+                        {finding.title && (
+                          <h4 className="font-bold text-amber-900 mb-1">{finding.title}</h4>
+                        )}
+                        <p className="text-sm text-amber-900">{finding.text}</p>
+                      </div>
+                      <BadgePill
+                        type={finding.type as any}
+                        impact={finding.impact as any}
+                        label={
+                          finding.type === 'critical' ? 'Crítico' :
+                          finding.type === 'warning' ? 'Alerta' : 'Información'
+                        }
+                        size="sm"
+                      />
+                    </div>
+                    {finding.description && (
+                      <p className="text-xs text-slate-600 italic mt-3 pl-3 border-l-2 border-amber-300">
+                        {finding.description}
+                      </p>
+                    )}
+                  </motion.div>
                 ))}
-              </ul>
-            </div>
-
-            {/* Recomendaciones */}
-            <div className="bg-[#E8EBFA] border-2 border-[#6D84E3] rounded-xl p-6">
-              <h3 className="font-bold text-xl text-[#3F3F3F] mb-4 flex items-center gap-2">
-                <Target size={24} className="text-[#6D84E3]" />
-                Recomendaciones
-              </h3>
-              <ul className="space-y-3 text-sm text-[#3F3F3F]">
-                {(analysisData.recommendations || []).map((rec, i) => (
-                  <motion.li
-                    key={i}
-                    initial={{ opacity: 0, x: -10 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 }}
-                    className="flex gap-2"
-                  >
-                    <span className="text-[#6D84E3] mt-1 font-bold">→</span>
-                    <span>{rec.text}</span>
-                  </motion.li>
-                ))}
-              </ul>
+              </div>
             </div>
           </motion.div>
         </section>
 
-        {/* 3. ANÁLISIS DIMENSIONAL */}
+        {/* 3. INSIGHTS SECTION - RECOMMENDATIONS */}
         <section>
-          <SectionDivider 
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <div className="bg-[#E8EBFA] border-2 border-[#6D84E3] rounded-xl p-8">
+              <h3 className="font-bold text-2xl text-[#3F3F3F] mb-6 flex items-center gap-2">
+                <Target size={28} className="text-[#6D84E3]" />
+                Recomendaciones Prioritarias
+              </h3>
+              <div className="space-y-5">
+                {(analysisData.recommendations || []).map((rec, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                    className="bg-white rounded-lg p-5 border border-blue-100 hover:shadow-md transition-shadow"
+                  >
+                    <div className="flex items-start justify-between gap-4 mb-3">
+                      <div className="flex-1">
+                        {rec.title && (
+                          <h4 className="font-bold text-[#3F3F3F] mb-1">{rec.title}</h4>
+                        )}
+                        <p className="text-sm text-[#3F3F3F] mb-2">{rec.text}</p>
+                      </div>
+                      <BadgePill
+                        priority={rec.priority as any}
+                        label={
+                          rec.priority === 'high' ? 'Alta Prioridad' :
+                          rec.priority === 'medium' ? 'Prioridad Media' : 'Baja Prioridad'
+                        }
+                        size="sm"
+                      />
+                    </div>
+
+                    {(rec.description || rec.impact || rec.timeline) && (
+                      <div className="bg-slate-50 rounded p-3 mt-3 border-l-4 border-[#6D84E3]">
+                        {rec.description && (
+                          <p className="text-xs text-slate-700 mb-2">
+                            <span className="font-semibold">Descripción:</span> {rec.description}
+                          </p>
+                        )}
+                        {rec.impact && (
+                          <p className="text-xs text-slate-700 mb-2">
+                            <span className="font-semibold text-green-700">Impacto esperado:</span> {rec.impact}
+                          </p>
+                        )}
+                        {rec.timeline && (
+                          <p className="text-xs text-slate-700">
+                            <span className="font-semibold">Timeline:</span> {rec.timeline}
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        </section>
+
+        {/* 4. ANÁLISIS DIMENSIONAL */}
+        <section>
+          <SectionDivider
             icon={<BarChart2 size={20} className="text-blue-600" />}
             title="Análisis Dimensional"
           />

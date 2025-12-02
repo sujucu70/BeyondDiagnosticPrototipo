@@ -105,7 +105,6 @@ const DataUploaderEnhanced: React.FC<DataUploaderEnhancedProps> = ({
     
     setTimeout(() => {
       const csvData = generateSyntheticCsv(selectedTier);
-      console.log(`Generated ${csvData.split('\n').length} rows of synthetic data for tier: ${selectedTier}`);
       toast.dismiss('generating');
       handleDataReady('¡Datos Sintéticos Generados!');
     }, 2000);
