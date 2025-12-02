@@ -84,8 +84,9 @@ const BenchmarkReportPro: React.FC<BenchmarkReportProProps> = ({ data }) => {
       });
   }, [extendedData]);
 
-  return (
-    <div id="benchmark" className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm">
+  try {
+    return (
+      <div id="benchmark" className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm">
       {/* Header with Dynamic Title */}
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-2">
@@ -347,8 +348,17 @@ const PercentileBar: React.FC<{ percentile: number }> = ({ percentile }) => {
       <div className="absolute inset-0 flex items-center justify-center">
         <span className="text-xs font-bold text-white drop-shadow">P{percentile}</span>
       </div>
-    </div>
-  );
+      </div>
+    );
+  } catch (error) {
+    console.error('❌ CRITICAL ERROR in BenchmarkReportPro render:', error);
+    return (
+      <div className="bg-red-50 border-2 border-red-200 rounded-lg p-6">
+        <h3 className="text-lg font-semibold text-red-900 mb-2">❌ Error en Benchmark</h3>
+        <p className="text-red-800">No se pudo renderizar el componente. Error: {String(error)}</p>
+      </div>
+    );
+  }
 };
 
 // Helper Functions
