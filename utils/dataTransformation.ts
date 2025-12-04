@@ -4,6 +4,27 @@
 import type { RawInteraction } from '../types';
 
 /**
+ * Extract reason codes from interactions by skill
+ * Used for calculating structuring percentage from actual CTI data
+ */
+export function extractReasonCodesBySkill(interactions: RawInteraction[]): Map<string, string[]> {
+  const reasonCodesBySkill = new Map<string, string[]>();
+
+  interactions.forEach(interaction => {
+    if (!interaction.reason_code) return;
+
+    const skill = interaction.queue_skill;
+    if (!reasonCodesBySkill.has(skill)) {
+      reasonCodesBySkill.set(skill, []);
+    }
+
+    reasonCodesBySkill.get(skill)!.push(interaction.reason_code);
+  });
+
+  return reasonCodesBySkill;
+}
+
+/**
  * Paso 1: Limpieza de Ruido
  * Elimina interacciones con duration < 10 segundos (falsos contactos o errores de sistema)
  */

@@ -219,3 +219,41 @@ export const BENCHMARK_PERCENTILES = {
   transfer_rate: { p25: 25, p50: 15, p75: 8, p90: 3 },  // %
   csat: { p25: 75, p50: 82, p75: 88, p90: 93 }
 };
+
+// v2.0: Queue-specific exception rate defaults (fallback for limited data)
+// Used when AHT distribution has insufficient samples (<100 records)
+export const QUEUE_EXCEPTION_RATE_DEFAULTS = {
+  'sales': 0.10,              // 10% - Low exceptions (follow sales scripts)
+  'support_level_1': 0.15,    // 15% - Medium exceptions (basic troubleshooting)
+  'support_level_2': 0.25,    // 25% - Higher exceptions (complex issues)
+  'support_tier_1': 0.15,
+  'support_tier_2': 0.25,
+  'billing': 0.12,            // 12% - Low exceptions (procedural/rules-based)
+  'technical': 0.30,          // 30% - High exceptions (varied technical issues)
+  'customer_service': 0.18,   // 18% - Medium exceptions
+  'retention': 0.20,          // 20% - Medium-high exceptions
+  'collections': 0.22,        // 22% - Higher exceptions (complex negotiations)
+  'back_office': 0.08,        // 8% - Very low (data entry, simple tasks)
+  'default': 0.15             // 15% - Neutral fallback
+};
+
+// Helper function to get exception rate default by queue name
+export function getExceptionRateDefault(queue_skill?: string): number {
+  if (!queue_skill) return QUEUE_EXCEPTION_RATE_DEFAULTS.default;
+
+  const queue_lower = queue_skill.toLowerCase();
+
+  // Direct match
+  if (QUEUE_EXCEPTION_RATE_DEFAULTS[queue_lower]) {
+    return QUEUE_EXCEPTION_RATE_DEFAULTS[queue_lower];
+  }
+
+  // Partial match
+  for (const [key, rate] of Object.entries(QUEUE_EXCEPTION_RATE_DEFAULTS)) {
+    if (key !== 'default' && queue_lower.includes(key)) {
+      return rate;
+    }
+  }
+
+  return QUEUE_EXCEPTION_RATE_DEFAULTS.default;
+}

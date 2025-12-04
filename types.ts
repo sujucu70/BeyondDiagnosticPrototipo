@@ -60,6 +60,7 @@ export interface RawInteraction {
   agent_id: string;           // ID agente (anónimo/hash)
   transfer_flag: boolean;     // Indicador de transferencia
   caller_id?: string;         // ID cliente (opcional, hash/anónimo)
+  reason_code?: string;       // Código de razón del contacto (opcional, de CTI/IVR)
 }
 
 // Métricas calculadas por skill
