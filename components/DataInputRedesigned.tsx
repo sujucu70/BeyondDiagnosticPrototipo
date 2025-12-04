@@ -49,16 +49,76 @@ const DataInputRedesigned: React.FC<DataInputRedesignedProps> = ({
   
   // Campos CSV requeridos
   const csvFields = [
-    { name: 'interaction_id', type: 'String único', example: 'call_8842910', required: true },
-    { name: 'datetime_start', type: 'DateTime', example: '2024-10-01 09:15:22', required: true },
-    { name: 'queue_skill', type: 'String', example: 'Soporte_Nivel1, Ventas', required: true },
-    { name: 'channel', type: 'String', example: 'Voice, Chat, WhatsApp', required: true },
-    { name: 'duration_talk', type: 'Segundos', example: '345', required: true },
-    { name: 'hold_time', type: 'Segundos', example: '45', required: true },
-    { name: 'wrap_up_time', type: 'Segundos', example: '30', required: true },
-    { name: 'agent_id', type: 'String', example: 'Agente_045', required: true },
-    { name: 'transfer_flag', type: 'Boolean', example: 'TRUE / FALSE', required: true },
-    { name: 'caller_id', type: 'String (hash)', example: 'Hash_99283', required: false }
+    {
+      name: 'interaction_id',
+      type: 'String único',
+      example: 'call_8842910',
+      required: true,
+      description: 'Identificador único de cada llamada o interacción'
+    },
+    {
+      name: 'datetime_start',
+      type: 'DateTime',
+      example: '2024-10-01 09:15:22',
+      required: true,
+      description: 'Fecha y hora de inicio de la interacción (ISO 8601)'
+    },
+    {
+      name: 'queue_skill',
+      type: 'String',
+      example: 'Soporte_Nivel1, Ventas',
+      required: true,
+      description: 'Nombre de la cola, equipo o skill que atendió la llamada'
+    },
+    {
+      name: 'channel',
+      type: 'String',
+      example: 'Voice, Chat, WhatsApp',
+      required: true,
+      description: 'Canal de comunicación (Voz, Chat, Email, WhatsApp, etc.)'
+    },
+    {
+      name: 'duration_talk',
+      type: 'Segundos',
+      example: '345',
+      required: true,
+      description: 'Duración del tiempo de conversación activa en segundos'
+    },
+    {
+      name: 'hold_time',
+      type: 'Segundos',
+      example: '45',
+      required: true,
+      description: 'Duración del tiempo en espera (puente, música en espera) en segundos'
+    },
+    {
+      name: 'wrap_up_time',
+      type: 'Segundos',
+      example: '30',
+      required: true,
+      description: 'Tiempo de cierre/gestión posterior a la llamada (ACW) en segundos'
+    },
+    {
+      name: 'agent_id',
+      type: 'String',
+      example: 'Agente_045',
+      required: true,
+      description: 'Identificador único del agente que atendió la interacción'
+    },
+    {
+      name: 'transfer_flag',
+      type: 'Boolean',
+      example: 'TRUE / FALSE',
+      required: true,
+      description: 'Indica si la llamada fue transferida o escalada (verdadero/falso)'
+    },
+    {
+      name: 'caller_id',
+      type: 'String (hash)',
+      example: 'Hash_99283',
+      required: false,
+      description: 'Hash anónimo del cliente para seguimiento (opcional)'
+    }
   ];
   
   const handleDownloadTemplate = () => {
@@ -327,6 +387,7 @@ const DataInputRedesigned: React.FC<DataInputRedesignedProps> = ({
                 <th className="p-3 text-left font-semibold text-slate-700 border-b-2 border-slate-300">Campo</th>
                 <th className="p-3 text-left font-semibold text-slate-700 border-b-2 border-slate-300">Tipo</th>
                 <th className="p-3 text-left font-semibold text-slate-700 border-b-2 border-slate-300">Ejemplo</th>
+                <th className="p-3 text-left font-semibold text-slate-700 border-b-2 border-slate-300">Descripción</th>
                 <th className="p-3 text-center font-semibold text-slate-700 border-b-2 border-slate-300">Obligatorio</th>
               </tr>
             </thead>
@@ -339,6 +400,7 @@ const DataInputRedesigned: React.FC<DataInputRedesignedProps> = ({
                   <td className="p-3 font-mono text-sm font-semibold text-slate-900">{field.name}</td>
                   <td className="p-3 text-slate-700">{field.type}</td>
                   <td className="p-3 font-mono text-xs text-slate-600">{field.example}</td>
+                  <td className="p-3 text-slate-600 text-xs max-w-xs">{(field as any).description || '-'}</td>
                   <td className="p-3 text-center">
                     {field.required ? (
                       <span className="inline-flex items-center gap-1 text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full font-semibold">
